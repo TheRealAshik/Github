@@ -1,0 +1,96 @@
+name: Build All Platforms
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build Android APK
+        run: ./gradlew :composeApp:assembleDebug
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-android-apk
+          path: composeApp/build/outputs/apk/debug/*.apk
+          retention-days: 7
+
+  desktop:
+    name: Build Desktop (JVM)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build Desktop Distributable
+        run: ./gradlew :composeApp:packageDistributionForCurrentOS
+      - name: Upload Desktop Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-desktop-linux
+          path: composeApp/build/compose/binaries/
+          retention-days: 7
+
+  windows:
+    name: Build Windows (MSI)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build Windows MSI
+        run: ./gradlew :composeApp:packageMsi
+      - name: Upload Windows MSI
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-windows-msi
+          path: composeApp/build/compose/binaries/main/msi/*.msi
+          retention-days: 7
+
+  ios:
+    name: Build iOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Build iOS Simulator App
+        run: |
+          xcodebuild -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -destination "generic/platform=iOS Simulator" \
+            CONFIGURATION_BUILD_DIR=iosApp/build
+      - name: Zip iOS App
+        run: |
+          cd iosApp/build
+          zip -r iosApp.zip *.app
+      - name: Upload iOS App
+        uses: actions/upload-artifact@v4
+        with:
+          name: github-ios-app
+          path: iosApp/build/iosApp.zip
+          retention-days: 7
