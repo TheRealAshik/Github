@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Build Android APK
         run: ./gradlew :composeApp:assembleDebug
       - name: Upload Android APK
@@ -37,7 +37,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Build Desktop Distributable
         run: ./gradlew :composeApp:packageDistributionForCurrentOS
       - name: Upload Desktop Artifacts
@@ -57,7 +57,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Build Windows MSI
         run: ./gradlew :composeApp:packageMsi
       - name: Upload Windows MSI
@@ -77,7 +77,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Build iOS Simulator App
         run: |
           xcodebuild -project iosApp/iosApp.xcodeproj \
