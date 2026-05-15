@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- General -->
     <string name="back">Back</string>
     <string name="create">Create</string>
     <string name="more_options">More options</string>
@@ -40,4 +41,55 @@
     <string name="pr_number_format">#%1$d</string>
     <string name="checks_format">✓ %1$s</string>
     <string name="comments_count_format">💬 %1$d</string>
+    <string name="coming_soon">Coming soon</string>
+
+    <!-- Main Tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_inbox">Inbox</string>
+    <string name="tab_explore">Explore</string>
+    <string name="tab_copilot">Copilot</string>
+
+    <!-- Inbox -->
+    <string name="inbox_title">Inbox</string>
+    <string name="filter_inbox">Inbox ▾</string>
+    <string name="filter_focused">Focused</string>
+    <string name="filter_unread">Unread</string>
+    <string name="filter_repository">Repository ▾</string>
+    <string name="swipe_mark_done">Mark as done</string>
+    <string name="swipe_unsubscribe">Unsubscribe</string>
+
+    <!-- Inbox Mocks -->
+    <string name="inbox_mock_repo_1">TheRealAshik / Jules #49</string>
+    <string name="inbox_mock_title_1">🦑 Jules, reporting for duty!</string>
+    <string name="inbox_mock_subtitle_1">👋 Jules, reporting for duty! I\'m here to help.</string>
+    <string name="inbox_mock_time_1">2h</string>
+
+    <string name="inbox_mock_repo_2">TheRealAshik / ComposeApp #12</string>
+    <string name="inbox_mock_title_2">Update Compose Multiplatform</string>
+    <string name="inbox_mock_subtitle_2">Bumping to version 1.6.0</string>
+    <string name="inbox_mock_time_2">5h</string>
+
+    <!-- Explore -->
+    <string name="explore_title">Explore</string>
+    <string name="discover_section">Discover</string>
+    <string name="trending_repos">Trending Repositories</string>
+    <string name="awesome_lists">Awesome Lists</string>
+    <string name="activity_section">Activity</string>
+    <string name="read_more">Read more ›</string>
+    <string name="filter_activity">Filter activity</string>
+
+    <!-- Explore Mocks -->
+    <string name="explore_mock_user_1">ashik</string>
+    <string name="explore_mock_action_1">contributed to TheRealAshik/Jules</string>
+    <string name="explore_mock_time_1">2h</string>
+    <string name="explore_mock_repo_1">TheRealAshik/Jules</string>
+    <string name="explore_mock_pr_title_1">✨ Feature: Add Inbox and Explore screens</string>
+    <string name="explore_mock_status_merged">Merged</string>
+    <string name="explore_mock_branch_1">feature/ui-screens</string>
+    <string name="explore_mock_pr_body_1">This PR adds the missing Inbox and Explore screens using Jetpack Compose.</string>
+
+    <string name="explore_mock_bot">github-actions[bot]</string>
+    <string name="explore_mock_action_release">published a release</string>
+    <string name="explore_mock_time_release">1d</string>
+    <string name="explore_mock_release_title">v1.0.0-beta01</string>
 </resources>
