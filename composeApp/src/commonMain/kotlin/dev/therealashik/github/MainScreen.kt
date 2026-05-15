@@ -74,7 +74,7 @@ fun MainScreen(onNavigateToProfile: () -> Unit = {}) {
                         imageVector = Icons.Outlined.Person,
                         contentDescription = stringResource(Res.string.profile_name),
                         modifier = Modifier
-                            .padding(end = Dimens.spacingMedium)
+                            .padding(end = Dimens.SpacingMedium)
                             .clip(CircleShape)
                             .clickable { onNavigateToProfile() }
                     )

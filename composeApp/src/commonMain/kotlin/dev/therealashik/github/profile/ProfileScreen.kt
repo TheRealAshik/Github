@@ -77,9 +77,9 @@ fun ProfileScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             HeaderSection()
-            Spacer(modifier = Modifier.height(Dimens.spacingLarge))
+            Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
             PopularReposSection(popularRepos = uiState.popularRepos)
-            Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+            Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
             HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
             NavigationListSection(
                 uiState = uiState,
@@ -94,7 +94,7 @@ private fun HeaderSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = Dimens.spacingMedium)
+            .padding(horizontal = Dimens.SpacingMedium)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -102,7 +102,7 @@ private fun HeaderSection() {
         ) {
             Box(
                 modifier = Modifier
-                    .size(Dimens.avatarSize)
+                    .size(Dimens.AvatarSize)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
@@ -110,12 +110,12 @@ private fun HeaderSection() {
                 Icon(
                     imageVector = Icons.Outlined.Person,
                     contentDescription = null,
-                    modifier = Modifier.size(Dimens.iconExtraLarge),
+                    modifier = Modifier.size(Dimens.IconSizeExtraLarge),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            Spacer(modifier = Modifier.width(Dimens.spacingMedium))
+            Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
 
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -138,7 +138,7 @@ private fun HeaderSection() {
             }
         }
 
-        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
         Surface(
             shape = MaterialTheme.shapes.small,
@@ -147,12 +147,12 @@ private fun HeaderSection() {
         ) {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = Dimens.spacingMediumSmall, vertical = Dimens.spacingSmall)
+                    .padding(horizontal = Dimens.SpacingMediumSmall, vertical = Dimens.SpacingSmall)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = stringResource(Res.string.profile_status_emoji))
-                Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+                Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
                 Text(
                     text = stringResource(Res.string.profile_status),
                     style = MaterialTheme.typography.bodyMedium,
@@ -163,12 +163,12 @@ private fun HeaderSection() {
                     imageVector = Icons.Outlined.Edit,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(Dimens.spacingMedium)
+                    modifier = Modifier.size(Dimens.SpacingMedium)
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
         Text(
             text = stringResource(Res.string.profile_bio),
@@ -176,29 +176,29 @@ private fun HeaderSection() {
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Outlined.Business,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
                 text = stringResource(Res.string.profile_company),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingMedium))
+            Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
             Icon(
                 imageVector = Icons.Outlined.LocationOn,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
                 text = stringResource(Res.string.profile_location),
                 style = MaterialTheme.typography.bodyMedium,
@@ -206,46 +206,46 @@ private fun HeaderSection() {
             )
         }
 
-        Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+        Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Outlined.Link, // Facebook placeholder
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
                 text = stringResource(Res.string.social_facebook),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-        Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
+        Spacer(modifier = Modifier.height(Dimens.SpacingExtraSmall))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Outlined.Link, // Instagram placeholder
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
                 text = stringResource(Res.string.social_instagram),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
-        Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
+        Spacer(modifier = Modifier.height(Dimens.SpacingExtraSmall))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Outlined.Link, // X placeholder
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
                 text = stringResource(Res.string.social_x),
                 style = MaterialTheme.typography.bodyMedium,
@@ -253,16 +253,16 @@ private fun HeaderSection() {
             )
         }
 
-        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Outlined.Person,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
                 text = "${stringResource(Res.string.profile_followers_count)} • ${stringResource(Res.string.profile_following_count)}",
                 style = MaterialTheme.typography.bodyMedium,
@@ -270,13 +270,13 @@ private fun HeaderSection() {
             )
         }
 
-        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
         Row {
             // Achievement badges mock
             Box(
                 modifier = Modifier
-                    .size(Dimens.iconExtraLarge)
+                    .size(Dimens.IconSizeExtraLarge)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.tertiaryContainer),
                 contentAlignment = Alignment.Center
@@ -285,7 +285,7 @@ private fun HeaderSection() {
                     imageVector = Icons.Outlined.Star,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onTertiaryContainer,
-                    modifier = Modifier.size(Dimens.spacingLarge)
+                    modifier = Modifier.size(Dimens.SpacingLarge)
                 )
             }
         }
@@ -299,32 +299,32 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
             text = stringResource(Res.string.popular_title),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = Dimens.spacingMedium, vertical = Dimens.spacingSmall)
+            modifier = Modifier.padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall)
         )
 
         Row(
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = Dimens.spacingMedium),
-            horizontalArrangement = Arrangement.spacedBy(Dimens.spacingMediumSmall)
+                .padding(horizontal = Dimens.SpacingMedium),
+            horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMediumSmall)
         ) {
             popularRepos.forEach { repo ->
                 OutlinedCard(
-                    modifier = Modifier.width(Dimens.cardWidth),
+                    modifier = Modifier.width(Dimens.CardWidth),
                     colors = CardDefaults.outlinedCardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    border = CardDefaults.outlinedCardBorder().copy(width = Dimens.borderWidth)
+                    border = CardDefaults.outlinedCardBorder().copy(width = Dimens.BorderWidth)
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(Dimens.spacingMedium)
+                            .padding(Dimens.SpacingMedium)
                             .fillMaxWidth()
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .size(Dimens.avatarSmall)
+                                    .size(Dimens.AvatarSmall)
                                     .clip(CircleShape)
                                     .background(MaterialTheme.colorScheme.surfaceVariant),
                                 contentAlignment = Alignment.Center
@@ -332,11 +332,11 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
                                 Icon(
                                     imageVector = Icons.Outlined.Person,
                                     contentDescription = null,
-                                    modifier = Modifier.size(Dimens.spacingMediumSmall),
+                                    modifier = Modifier.size(Dimens.SpacingMediumSmall),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
+                            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
                             Text(
                                 text = repo.owner,
                                 style = MaterialTheme.typography.bodySmall,
@@ -344,7 +344,7 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+                        Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
 
                         Text(
                             text = repo.name,
@@ -353,7 +353,7 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
                         )
 
                         if (repo.description != null) {
-                            Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
+                            Spacer(modifier = Modifier.height(Dimens.SpacingExtraSmall))
                             Text(
                                 text = repo.description,
                                 style = MaterialTheme.typography.bodyMedium,
@@ -363,16 +363,16 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
                             )
                         }
 
-                        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+                        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Filled.Star,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(Dimens.spacingMedium)
+                                modifier = Modifier.size(Dimens.SpacingMedium)
                             )
-                            Spacer(modifier = Modifier.width(Dimens.spacingExtraSmall))
+                            Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
                             Text(
                                 text = repo.stars.toString(),
                                 style = MaterialTheme.typography.bodySmall,
@@ -380,14 +380,14 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
                             )
 
                             if (repo.language != null) {
-                                Spacer(modifier = Modifier.width(Dimens.spacingMedium))
+                                Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
                                 Box(
                                     modifier = Modifier
-                                        .size(Dimens.indicatorSize)
+                                        .size(Dimens.IndicatorSize)
                                         .clip(CircleShape)
                                         .background(MaterialTheme.colorScheme.primary)
                                 )
-                                Spacer(modifier = Modifier.width(Dimens.spacingExtraSmall))
+                                Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
                                 Text(
                                     text = repo.language,
                                     style = MaterialTheme.typography.bodySmall,
@@ -412,7 +412,7 @@ private fun NavigationListSection(
             icon = {
                 Box(
                     modifier = Modifier
-                        .size(Dimens.iconLarge)
+                        .size(Dimens.IconSizeLarge)
                         .clip(MaterialTheme.shapes.small)
                         .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
@@ -432,7 +432,7 @@ private fun NavigationListSection(
             icon = {
                 Box(
                     modifier = Modifier
-                        .size(Dimens.iconLarge)
+                        .size(Dimens.IconSizeLarge)
                         .clip(MaterialTheme.shapes.small)
                         .background(MaterialTheme.colorScheme.errorContainer),
                     contentAlignment = Alignment.Center
@@ -452,7 +452,7 @@ private fun NavigationListSection(
             icon = {
                 Box(
                     modifier = Modifier
-                        .size(Dimens.iconLarge)
+                        .size(Dimens.IconSizeLarge)
                         .clip(MaterialTheme.shapes.small)
                         .background(MaterialTheme.colorScheme.tertiaryContainer),
                     contentAlignment = Alignment.Center
@@ -472,7 +472,7 @@ private fun NavigationListSection(
             icon = {
                 Box(
                     modifier = Modifier
-                        .size(Dimens.iconLarge)
+                        .size(Dimens.IconSizeLarge)
                         .clip(MaterialTheme.shapes.small)
                         .background(MaterialTheme.colorScheme.secondaryContainer),
                     contentAlignment = Alignment.Center
@@ -502,11 +502,11 @@ private fun NavigationItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = Dimens.spacingMedium, vertical = Dimens.spacingMediumSmall),
+            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingMediumSmall),
         verticalAlignment = Alignment.CenterVertically
     ) {
         icon()
-        Spacer(modifier = Modifier.width(Dimens.spacingMedium))
+        Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,

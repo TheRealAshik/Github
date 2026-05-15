@@ -90,7 +90,7 @@ fun RepositoryListScreen(
                 .padding(innerPadding)
         ) {
             FilterChipsRow()
-            Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
             HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
 
             LazyColumn(
@@ -111,8 +111,8 @@ private fun FilterChipsRow() {
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = Dimens.spacingMedium, vertical = Dimens.spacingSmall),
-        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingSmall)
     ) {
         FilterChipItem(label = stringResource(Res.string.filter_all))
         FilterChipItem(label = stringResource(Res.string.filter_language))
@@ -128,18 +128,18 @@ private fun FilterChipItem(label: String) {
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = Dimens.spacingMediumSmall, vertical = Dimens.spacingSmall),
+            modifier = Modifier.padding(horizontal = Dimens.SpacingMediumSmall, vertical = Dimens.SpacingSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.bodyMedium
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingExtraSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
             Icon(
                 imageVector = Icons.Filled.ArrowDropDown,
                 contentDescription = null,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
         }
     }
@@ -150,7 +150,7 @@ private fun RepositoryItemRow(repo: RepositoryItem) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(Dimens.spacingMedium)
+            .padding(Dimens.SpacingMedium)
     ) {
         Text(
             text = repo.name,
@@ -159,7 +159,7 @@ private fun RepositoryItemRow(repo: RepositoryItem) {
         )
 
         if (repo.description != null) {
-            Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
+            Spacer(modifier = Modifier.height(Dimens.SpacingExtraSmall))
             Text(
                 text = repo.description,
                 style = MaterialTheme.typography.bodyMedium,
@@ -170,15 +170,15 @@ private fun RepositoryItemRow(repo: RepositoryItem) {
         }
 
         if (repo.forkedFrom != null) {
-            Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+            Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Outlined.ForkRight,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(Dimens.spacingMedium)
+                    modifier = Modifier.size(Dimens.SpacingMedium)
                 )
-                Spacer(modifier = Modifier.width(Dimens.spacingExtraSmall))
+                Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
                 Text(
                     text = repo.forkedFrom,
                     style = MaterialTheme.typography.bodySmall,
@@ -187,16 +187,16 @@ private fun RepositoryItemRow(repo: RepositoryItem) {
             }
         }
 
-        Spacer(modifier = Modifier.height(Dimens.spacingMediumSmall))
+        Spacer(modifier = Modifier.height(Dimens.SpacingMediumSmall))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.Star,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.spacingMedium)
+                modifier = Modifier.size(Dimens.SpacingMedium)
             )
-            Spacer(modifier = Modifier.width(Dimens.spacingExtraSmall))
+            Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
             Text(
                 text = repo.stars.toString(),
                 style = MaterialTheme.typography.bodySmall,
@@ -204,14 +204,14 @@ private fun RepositoryItemRow(repo: RepositoryItem) {
             )
 
             if (repo.language != null) {
-                Spacer(modifier = Modifier.width(Dimens.spacingMedium))
+                Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
                 Box(
                     modifier = Modifier
-                        .size(Dimens.indicatorSize)
+                        .size(Dimens.IndicatorSize)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary) // Primary for purple dot
                 )
-                Spacer(modifier = Modifier.width(Dimens.spacingExtraSmall))
+                Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
                 Text(
                     text = repo.language,
                     style = MaterialTheme.typography.bodySmall,
