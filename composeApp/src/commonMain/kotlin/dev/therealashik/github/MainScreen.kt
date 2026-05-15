@@ -85,7 +85,7 @@ fun MainScreen(onNavigateToProfile: () -> Unit = {}) {
                 .padding(innerPadding)
         ) {
             when (selectedTab) {
-                0 -> HomeScreen()
+                0 -> HomeScreen(onNavigateToProfile = onNavigateToProfile)
                 1 -> InboxScreen()
                 2 -> ExploreScreen()
                 else -> Box(

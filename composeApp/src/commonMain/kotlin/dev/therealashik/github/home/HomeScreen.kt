@@ -21,14 +21,17 @@ import github.composeapp.generated.resources.Res
 import github.composeapp.generated.resources.*
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel { HomeViewModel() }) {
+fun HomeScreen(
+    viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel { HomeViewModel() },
+    onNavigateToProfile: () -> Unit = {}
+) {
     val state by viewModel.uiState.collectAsState()
-    HomeScreenContent(state = state, onRetry = viewModel::loadData)
+    HomeScreenContent(state = state, onRetry = viewModel::loadData, onNavigateToProfile = onNavigateToProfile)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}) {
+fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}, onNavigateToProfile: () -> Unit = {}) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,9 +51,7 @@ fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}) {
                     IconButton(onClick = { }) {
                         Icon(Icons.Outlined.AddCircle, contentDescription = stringResource(Res.string.cd_create))
                     }
-                    IconButton(onClick = { }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
+                    IconButton(onClick = onNavigateToProfile) {
                             contentDescription = stringResource(Res.string.cd_user_avatar),
                             modifier = Modifier
                                 .size(Dimens.IconSizeNormal)
@@ -59,7 +60,8 @@ fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}) {
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+                windowInsets = WindowInsets(0)
             )
         },
         containerColor = MaterialTheme.colorScheme.background
