@@ -52,6 +52,8 @@ fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}, onNavigateTo
                         Icon(Icons.Outlined.AddCircle, contentDescription = stringResource(Res.string.cd_create))
                     }
                     IconButton(onClick = onNavigateToProfile) {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
                             contentDescription = stringResource(Res.string.cd_user_avatar),
                             modifier = Modifier
                                 .size(Dimens.IconSizeNormal)
