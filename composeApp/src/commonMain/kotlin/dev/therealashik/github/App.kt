@@ -23,7 +23,18 @@ fun App() {
         Crossfade(targetState = currentScreen) { screen ->
             when (screen) {
                 "splash" -> SplashScreen(onSplashFinished = { currentScreen = "main" })
-                "main" -> MainScreen()
+                "main" -> MainScreen(
+                    onNavigateToProfile = { currentScreen = "profile" }
+                )
+                "profile" -> dev.therealashik.github.profile.ProfileScreen(
+                    viewModel = dev.therealashik.github.profile.ProfileViewModel(),
+                    onBack = { currentScreen = "main" },
+                    onNavigateToRepositories = { currentScreen = "repositories" }
+                )
+                "repositories" -> dev.therealashik.github.repository.RepositoryListScreen(
+                    viewModel = dev.therealashik.github.repository.RepositoryListViewModel(),
+                    onBack = { currentScreen = "profile" }
+                )
             }
         }
     }
