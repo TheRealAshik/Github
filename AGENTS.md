@@ -45,6 +45,7 @@ composeApp/src/
 ### UI Design
 - Follow **Material 3 Expressive** design guidelines — use expressive color roles, dynamic shapes, motion, and typography tokens from the M3 spec.
 - Use `MaterialTheme` tokens (`colorScheme`, `typography`, `shapes`) exclusively; never hardcode colors or dimensions.
+- Theme must support **both light and dark** modes using `lightColorScheme()` and `darkColorScheme()`. Switch automatically with `isSystemInDarkTheme()`. Never force a single theme or override colors with hardcoded values (e.g. `Color.Black`).
 - Optimize layouts for all target platforms:
   - **Mobile (Android/iOS):** single-column, touch-friendly tap targets (≥48dp), bottom navigation.
   - **Desktop (JVM):** wider layouts with side navigation or rail, keyboard/mouse interactions, resizable windows.
@@ -64,7 +65,7 @@ composeApp/src/
 Strict rules apply to all UI implementations. **NO EXCEPTIONS**:
 - All user-visible strings → `strings.xml` + `stringResource()`
 - All colors → `MaterialTheme.colorScheme.*` only
-- All dimensions/spacing → `MaterialTheme` tokens or named `Dp` constants; never inline magic numbers
+- All dimensions/spacing → `Dimens` object constants (PascalCase) or `MaterialTheme` tokens; never inline magic numbers
 - All typography → `MaterialTheme.typography.*` only
 - All shapes → `MaterialTheme.shapes.*` only
 - Follow M3 Expressive: use expressive color roles, shape morphing, and motion tokens where applicable
@@ -72,6 +73,6 @@ Strict rules apply to all UI implementations. **NO EXCEPTIONS**:
 ## What Agents Should NOT Do
 
 - Do not modify `local.properties`.
-- Do not push directly to `main` — open a PR.
+- Do not push directly to `main` or `develop` — open a PR targeting `develop`.
 - Do not add new Gradle modules without discussion.
 - Do not introduce new networking libraries; use the existing HTTP client.
