@@ -21,8 +21,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import dev.therealashik.github.Dimens
+import org.jetbrains.compose.resources.stringResource
+import github.composeapp.generated.resources.*
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(onNavigateToProfile: () -> Unit) {
     var selectedTab by remember { mutableStateOf(0) }
     val tabs = listOf("Home", "Inbox", "Explore", "Copilot")
     val icons = listOf(
@@ -33,6 +44,21 @@ fun MainScreen() {
     )
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(github.composeapp.generated.resources.Res.string.app_name)) },
+                actions = {
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = stringResource(github.composeapp.generated.resources.Res.string.profile_name),
+                        modifier = Modifier
+                            .padding(end = Dimens.spacingMedium)
+                            .clip(CircleShape)
+                            .clickable { onNavigateToProfile() }
+                    )
+                }
+            )
+        },
         bottomBar = {
             NavigationBar {
                 tabs.forEachIndexed { index, title ->
