@@ -1,54 +1,38 @@
 package dev.therealashik.github.home
 
-import org.jetbrains.compose.resources.StringResource
-import github.composeapp.generated.resources.Res
-import github.composeapp.generated.resources.*
-
 sealed class HomeUiState {
     data object Loading : HomeUiState()
+    data class Error(val message: String) : HomeUiState()
     data class Success(
-        val myWork: List<MyWorkItem>,
-        val favorites: List<FavoriteItem>,
-        val shortcuts: List<ShortcutItem>,
-        val recent: List<RecentItem>
+        val repos: List<RepoItem>,
+        val orgs: List<OrgItem>,
+        val notifications: List<NotificationItem>
     ) : HomeUiState()
 }
 
-data class MyWorkItem(
-    val id: String,
-    val title: StringResource,
-    val iconType: IconType
-) {
-    enum class IconType { REPOS, ORGS }
-}
+data class RepoItem(
+    val id: Long,
+    val name: String,
+    val fullName: String,
+    val description: String?,
+    val language: String?,
+    val stars: Int,
+    val isPrivate: Boolean,
+    val updatedAt: String?
+)
 
-data class FavoriteItem(
-    val id: String,
-    val owner: StringResource,
-    val repo: StringResource,
-    val iconType: IconType
-) {
-    enum class IconType { REPO, AVATAR }
-}
+data class OrgItem(
+    val id: Long,
+    val login: String,
+    val avatarUrl: String,
+    val description: String?
+)
 
-data class ShortcutItem(
+data class NotificationItem(
     val id: String,
-    val category: StringResource,
-    val name: StringResource,
-    val iconType: IconType
-) {
-    enum class IconType { ISSUE }
-}
-
-data class RecentItem(
-    val id: String,
-    val repoPath: StringResource,
-    val title: StringResource,
-    val subtitle: StringResource,
-    val time: StringResource,
-    val commentCount: StringResource?,
+    val repoFullName: String,
+    val title: String,
+    val type: String,
     val isUnread: Boolean,
-    val iconType: IconType
-) {
-    enum class IconType { PR, ISSUE }
-}
+    val updatedAt: String
+)

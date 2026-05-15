@@ -21,6 +21,48 @@ data class GitHubUser(
     @SerialName("public_repos") val publicRepos: Int = 0
 )
 
+@Serializable
+data class GitHubRepo(
+    val id: Long,
+    val name: String,
+    @SerialName("full_name") val fullName: String,
+    val description: String? = null,
+    val private: Boolean = false,
+    @SerialName("stargazers_count") val stars: Int = 0,
+    val language: String? = null,
+    @SerialName("updated_at") val updatedAt: String? = null
+)
+
+@Serializable
+data class GitHubOrg(
+    val id: Long,
+    val login: String,
+    @SerialName("avatar_url") val avatarUrl: String,
+    val description: String? = null
+)
+
+@Serializable
+data class GitHubNotification(
+    val id: String,
+    val unread: Boolean,
+    val reason: String,
+    @SerialName("updated_at") val updatedAt: String,
+    val subject: NotificationSubject,
+    val repository: NotificationRepo
+)
+
+@Serializable
+data class NotificationSubject(
+    val title: String,
+    val type: String,
+    val url: String? = null
+)
+
+@Serializable
+data class NotificationRepo(
+    @SerialName("full_name") val fullName: String
+)
+
 class GitHubApiClient(private val tokenStorage: TokenStorage) {
 
     private val client = HttpClient {
@@ -37,6 +79,32 @@ class GitHubApiClient(private val tokenStorage: TokenStorage) {
 
     suspend fun getAuthenticatedUser(): Result<GitHubUser> = runCatching {
         client.get("https://api.github.com/user") { withAuth() }.body()
+    }
+
+    suspend fun getUserRepos(perPage: Int = 10): Result<List<GitHubRepo>> = runCatching {
+        client.get("https://api.github.com/user/repos") {
+            withAuth()
+            parameter("sort", "updated")
+            parameter("per_page", perPage)
+        }.body()
+    }
+
+    suspend fun getUserOrgs(): Result<List<GitHubOrg>> = runCatching {
+        client.get("https://api.github.com/user/orgs") { withAuth() }.body()
+    }
+
+    suspend fun getNotifications(perPage: Int = 20): Result<List<GitHubNotification>> = runCatching {
+        client.get("https://api.github.com/notifications") {
+            withAuth()
+            parameter("per_page", perPage)
+        }.body()
+    }
+
+    suspend fun getStarredRepos(perPage: Int = 5): Result<List<GitHubRepo>> = runCatching {
+        client.get("https://api.github.com/user/starred") {
+            withAuth()
+            parameter("per_page", perPage)
+        }.body()
     }
 
     fun close() = client.close()

@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.AddCircle
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Refresh
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,12 +23,12 @@ import github.composeapp.generated.resources.*
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel { HomeViewModel() }) {
     val state by viewModel.uiState.collectAsState()
-    HomeScreenContent(state = state)
+    HomeScreenContent(state = state, onRetry = viewModel::loadData)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenContent(state: HomeUiState) {
+fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -42,25 +39,16 @@ fun HomeScreenContent(state: HomeUiState) {
                     )
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = stringResource(Res.string.cd_search)
-                        )
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Outlined.Search, contentDescription = stringResource(Res.string.cd_search))
                     }
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Refresh,
-                            contentDescription = stringResource(Res.string.cd_refresh)
-                        )
+                    IconButton(onClick = onRetry) {
+                        Icon(Icons.Outlined.Refresh, contentDescription = stringResource(Res.string.cd_refresh))
                     }
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.AddCircle,
-                            contentDescription = stringResource(Res.string.cd_create)
-                        )
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Outlined.AddCircle, contentDescription = stringResource(Res.string.cd_create))
                     }
-                    IconButton(onClick = { /* TODO */ }) {
+                    IconButton(onClick = { }) {
                         Icon(
                             imageVector = Icons.Outlined.Person,
                             contentDescription = stringResource(Res.string.cd_user_avatar),
@@ -71,56 +59,56 @@ fun HomeScreenContent(state: HomeUiState) {
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
             )
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         when (state) {
             is HomeUiState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+            }
+            is HomeUiState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = state.message,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
+                        Button(onClick = onRetry) { Text("Retry") }
+                    }
                 }
             }
             is HomeUiState.Success -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding)
-                ) {
-                    // My Work
-                    item {
-                        SectionHeader(titleRes = Res.string.section_my_work, showOverflow = true)
-                    }
-                    items(state.myWork) { item ->
-                        MyWorkRow(item)
-                    }
-                    item { Divider() }
+                LazyColumn(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
+                    // Repositories
+                    item { SectionHeader(title = stringResource(Res.string.section_my_work)) }
+                    items(state.repos) { RepoRow(it) }
+                    item { HomeDivider() }
 
-                    // Favorites
-                    item {
-                        SectionHeader(titleRes = Res.string.section_favorites, showOverflow = true)
+                    // Organizations
+                    item { SectionHeader(title = "Organizations") }
+                    if (state.orgs.isEmpty()) {
+                        item { EmptyHint("No organizations") }
+                    } else {
+                        items(state.orgs) { OrgRow(it) }
                     }
-                    items(state.favorites) { item ->
-                        FavoriteRow(item)
-                    }
-                    item { Divider() }
+                    item { HomeDivider() }
 
-                    // Shortcuts
-                    item {
-                        SectionHeader(titleRes = Res.string.section_shortcuts, showOverflow = true)
-                    }
-                    items(state.shortcuts) { item ->
-                        ShortcutRow(item)
-                    }
-                    item { Divider() }
-
-                    // Recent
-                    item {
-                        SectionHeader(titleRes = Res.string.section_recent, showOverflow = false)
-                    }
-                    items(state.recent) { item ->
-                        RecentRow(item)
+                    // Notifications
+                    item { SectionHeader(title = stringResource(Res.string.section_recent)) }
+                    if (state.notifications.isEmpty()) {
+                        item { EmptyHint("No notifications") }
+                    } else {
+                        items(state.notifications) { NotificationRow(it) }
                     }
                 }
             }
@@ -129,7 +117,7 @@ fun HomeScreenContent(state: HomeUiState) {
 }
 
 @Composable
-fun SectionHeader(titleRes: org.jetbrains.compose.resources.StringResource, showOverflow: Boolean) {
+private fun SectionHeader(title: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -138,118 +126,22 @@ fun SectionHeader(titleRes: org.jetbrains.compose.resources.StringResource, show
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = stringResource(titleRes),
+            text = title,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onBackground
         )
-        if (showOverflow) {
-            IconButton(onClick = { /* TODO */ }, modifier = Modifier.size(Dimens.IconSizeNormal)) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = stringResource(Res.string.cd_overflow),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun MyWorkRow(item: MyWorkItem) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        val iconColor = when (item.iconType) {
-            MyWorkItem.IconType.REPOS -> MaterialTheme.colorScheme.onSurfaceVariant
-            MyWorkItem.IconType.ORGS -> MaterialTheme.colorScheme.tertiary
-        }
-
-        Box(
-            modifier = Modifier
-                .size(Dimens.IconSizeLarge)
-                .background(iconColor.copy(alpha = 0.2f), MaterialTheme.shapes.small),
-            contentAlignment = Alignment.Center
-        ) {
+        IconButton(onClick = { }, modifier = Modifier.size(Dimens.IconSizeNormal)) {
             Icon(
-                imageVector = Icons.Outlined.Person, // Placeholder, usually would be a specific repo/org icon
-                contentDescription = null,
-                tint = iconColor,
-                modifier = Modifier.size(Dimens.IconSizeSmall)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
-
-        Text(
-            text = stringResource(item.title),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
-
-@Composable
-fun FavoriteRow(item: FavoriteItem) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (item.iconType == FavoriteItem.IconType.REPO) {
-            Box(
-                modifier = Modifier
-                    .size(Dimens.IconSizeLarge)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(Dimens.IconSizeSmall)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.onPrimaryContainer)
-                )
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .size(Dimens.IconSizeLarge)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(Dimens.IconSizeNormal)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
-
-        Column {
-            Text(
-                text = stringResource(item.owner),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = stringResource(item.repo),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onBackground
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = stringResource(Res.string.cd_overflow),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
 @Composable
-fun ShortcutRow(item: ShortcutItem) {
+private fun RepoRow(item: RepoItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -259,49 +151,104 @@ fun ShortcutRow(item: ShortcutItem) {
         Box(
             modifier = Modifier
                 .size(Dimens.IconSizeLarge)
-                .background(MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.shapes.small),
+                .background(
+                    MaterialTheme.colorScheme.primaryContainer,
+                    MaterialTheme.shapes.small
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                imageVector = Icons.Outlined.Search, // Placeholder for eye/issue icon
+                imageVector = if (item.isPrivate) Icons.Outlined.Lock else Icons.Outlined.AccountBox,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.size(Dimens.IconSizeSmall)
             )
         }
-
         Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
-
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = stringResource(item.category),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                text = stringResource(item.name),
+                text = item.fullName,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
+            )
+            item.description?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1
+                )
+            }
+        }
+        if (item.stars > 0) {
+            Text(
+                text = "★ ${item.stars}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
 @Composable
-fun RecentRow(item: RecentItem) {
+private fun OrgRow(item: OrgItem) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(Dimens.IconSizeLarge)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Person,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(Dimens.IconSizeNormal)
+            )
+        }
+        Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
+        Column {
+            Text(
+                text = item.login,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            item.description?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NotificationRow(item: NotificationItem) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingMedium),
         verticalAlignment = Alignment.Top
     ) {
-        Box(
-            modifier = Modifier.size(Dimens.IconSizeNormal)
-        ) {
+        Box(modifier = Modifier.size(Dimens.IconSizeNormal)) {
             Icon(
-                imageVector = Icons.Outlined.AddCircle, // Placeholder for branch/PR icon
+                imageVector = when (item.type) {
+                    "PullRequest" -> Icons.Outlined.AccountBox
+                    "Issue" -> Icons.Outlined.Warning
+                    else -> Icons.Outlined.Notifications
+                },
                 contentDescription = null,
-                tint = if (item.iconType == RecentItem.IconType.PR) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                tint = if (item.isUnread) MaterialTheme.colorScheme.primary
+                       else MaterialTheme.colorScheme.onSurfaceVariant
             )
             if (item.isUnread) {
                 Box(
@@ -313,70 +260,43 @@ fun RecentRow(item: RecentItem) {
                 )
             }
         }
-
         Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
-
         Column(modifier = Modifier.weight(1f)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(item.repoPath),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = stringResource(item.time),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Spacer(modifier = Modifier.height(Dimens.SpacingNano))
-
             Text(
-                text = stringResource(item.title),
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                text = item.repoFullName,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(Dimens.SpacingNano))
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = if (item.isUnread) FontWeight.Bold else FontWeight.Normal
+                ),
                 color = MaterialTheme.colorScheme.onBackground
             )
-
             Spacer(modifier = Modifier.height(Dimens.SpacingNano))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(item.subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                item.commentCount?.let { countRes ->
-                    Box(
-                        modifier = Modifier
-                            .height(Dimens.BadgeHeight)
-                            .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
-                            .padding(horizontal = Dimens.BadgePaddingHorizontal),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(countRes),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
+            Text(
+                text = item.type,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
 
 @Composable
-fun Divider() {
+private fun EmptyHint(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall)
+    )
+}
+
+@Composable
+private fun HomeDivider() {
     HorizontalDivider(
         modifier = Modifier.padding(start = Dimens.SpacingExtraLarge + Dimens.SpacingMedium),
         thickness = Dimens.BorderWidthThin,

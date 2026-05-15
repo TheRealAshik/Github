@@ -57,6 +57,8 @@ fun ProfileScreen(
                         )
                     }
                     IconButton(onClick = onNavigateToSettings) {
+                        Icon(
+                            imageVector = Icons.Outlined.Settings,
                             contentDescription = stringResource(Res.string.settings)
                         )
                     }
@@ -69,27 +71,49 @@ fun ProfileScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            HeaderSection()
-            Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
-            PopularReposSection(popularRepos = uiState.popularRepos)
-            Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
-            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-            NavigationListSection(
-                uiState = uiState,
-                onNavigateToRepositories = onNavigateToRepositories
-            )
+        when (val state = uiState) {
+            is ProfileUiState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+            }
+            is ProfileUiState.Error -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(state.message, color = MaterialTheme.colorScheme.error)
+                        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
+                        Button(onClick = viewModel::loadData) { Text("Retry") }
+                    }
+                }
+            }
+            is ProfileUiState.Success -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    HeaderSection(state)
+                    Spacer(modifier = Modifier.height(Dimens.SpacingLarge))
+                    PopularReposSection(popularRepos = state.popularRepos)
+                    Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
+                    HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                    NavigationListSection(
+                        state = state,
+                        onNavigateToRepositories = onNavigateToRepositories
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun HeaderSection() {
+private fun HeaderSection(state: ProfileUiState.Success) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -117,139 +141,61 @@ private fun HeaderSection() {
             Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
 
             Column {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = stringResource(Res.string.profile_name),
-                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Icon(
-                        imageVector = Icons.Filled.ArrowDropDown,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
                 Text(
-                    text = "${stringResource(Res.string.profile_handle)} · ${stringResource(Res.string.profile_pronouns)}",
+                    text = state.name ?: state.login,
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "@${state.login}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
+        state.bio?.let {
+            Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
+            Text(
+                text = it,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
 
-        Surface(
-            shape = MaterialTheme.shapes.small,
-            color = MaterialTheme.colorScheme.surfaceVariant, // Olive/dark-yellow tint placeholder using safe static color or surface variant
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = Dimens.SpacingMediumSmall, vertical = Dimens.SpacingSmall)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = stringResource(Res.string.profile_status_emoji))
-                Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
-                Text(
-                    text = stringResource(Res.string.profile_status),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f)
-                )
-                Icon(
-                    imageVector = Icons.Outlined.Edit,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(Dimens.SpacingMedium)
-                )
+        if (state.company != null || state.location != null) {
+            Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                state.company?.let { company ->
+                    Icon(
+                        imageVector = Icons.Outlined.Business,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(Dimens.SpacingMedium)
+                    )
+                    Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
+                    Text(
+                        text = company,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
+                }
+                state.location?.let { location ->
+                    Icon(
+                        imageVector = Icons.Outlined.LocationOn,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(Dimens.SpacingMedium)
+                    )
+                    Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
+                    Text(
+                        text = location,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
-        }
-
-        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
-
-        Text(
-            text = stringResource(Res.string.profile_bio),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Outlined.Business,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.SpacingMedium)
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
-            Text(
-                text = stringResource(Res.string.profile_company),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
-            Icon(
-                imageVector = Icons.Outlined.LocationOn,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.SpacingMedium)
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
-            Text(
-                text = stringResource(Res.string.profile_location),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-
-        Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Outlined.Link, // Facebook placeholder
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.SpacingMedium)
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
-            Text(
-                text = stringResource(Res.string.social_facebook),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        Spacer(modifier = Modifier.height(Dimens.SpacingExtraSmall))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Outlined.Link, // Instagram placeholder
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.SpacingMedium)
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
-            Text(
-                text = stringResource(Res.string.social_instagram),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-        Spacer(modifier = Modifier.height(Dimens.SpacingExtraSmall))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Outlined.Link, // X placeholder
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.SpacingMedium)
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
-            Text(
-                text = stringResource(Res.string.social_x),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
         }
 
         Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
@@ -263,30 +209,10 @@ private fun HeaderSection() {
             )
             Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
-                text = "${stringResource(Res.string.profile_followers_count)} • ${stringResource(Res.string.profile_following_count)}",
+                text = "${state.followers} followers · ${state.following} following",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-        }
-
-        Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
-
-        Row {
-            // Achievement badges mock
-            Box(
-                modifier = Modifier
-                    .size(Dimens.IconSizeExtraLarge)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.tertiaryContainer),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Star,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onTertiaryContainer,
-                    modifier = Modifier.size(Dimens.SpacingLarge)
-                )
-            }
         }
     }
 }
@@ -403,7 +329,7 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
 
 @Composable
 private fun NavigationListSection(
-    uiState: ProfileUiState,
+    state: ProfileUiState.Success,
     onNavigateToRepositories: () -> Unit
 ) {
     Column {
@@ -424,7 +350,7 @@ private fun NavigationListSection(
                 }
             },
             label = stringResource(Res.string.nav_repositories),
-            count = uiState.repoCount,
+            count = state.publicRepos,
             onClick = onNavigateToRepositories
         )
         NavigationItem(
@@ -444,7 +370,7 @@ private fun NavigationListSection(
                 }
             },
             label = stringResource(Res.string.nav_organizations),
-            count = uiState.orgCount,
+            count = state.orgs.size,
             onClick = { /* TODO */ }
         )
         NavigationItem(
@@ -464,27 +390,7 @@ private fun NavigationListSection(
                 }
             },
             label = stringResource(Res.string.nav_starred),
-            count = uiState.starredCount,
-            onClick = { /* TODO */ }
-        )
-        NavigationItem(
-            icon = {
-                Box(
-                    modifier = Modifier
-                        .size(Dimens.IconSizeLarge)
-                        .clip(MaterialTheme.shapes.small)
-                        .background(MaterialTheme.colorScheme.secondaryContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.GridView,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
-            },
-            label = stringResource(Res.string.nav_projects),
-            count = uiState.projectCount,
+            count = state.starredCount,
             onClick = { /* TODO */ }
         )
     }
