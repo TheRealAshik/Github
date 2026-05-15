@@ -32,7 +32,8 @@ import org.jetbrains.compose.resources.stringResource
 fun ProfileScreen(
     viewModel: ProfileViewModel,
     onBack: () -> Unit,
-    onNavigateToRepositories: () -> Unit
+    onNavigateToRepositories: () -> Unit,
+    onNavigateToSettings: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -55,9 +56,7 @@ fun ProfileScreen(
                             contentDescription = stringResource(Res.string.share)
                         )
                     }
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Settings,
+                    IconButton(onClick = onNavigateToSettings) {
                             contentDescription = stringResource(Res.string.settings)
                         )
                     }

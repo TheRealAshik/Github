@@ -32,6 +32,7 @@ data class AccountItem(
 @Composable
 fun AccountsSheet(
     onDismiss: () -> Unit,
+    onAddAccount: () -> Unit,
     accounts: List<AccountItem> = listOf(
         AccountItem("therealashik", 5, true),
         AccountItem("work-account", 0, false)
@@ -154,7 +155,7 @@ fun AccountsSheet(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { /* TODO */ }
+                            .clickable { onAddAccount() }
                             .padding(horizontal = SettingsTokens.PaddingLarge, vertical = SettingsTokens.PaddingLarge),
                         verticalAlignment = Alignment.CenterVertically
                     ) {

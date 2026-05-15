@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import github.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
@@ -22,13 +24,24 @@ fun SettingsScreen(
     onNavigateBack: () -> Unit,
     onNavigateToNotificationOptions: () -> Unit,
     onNavigateToCodeOptions: () -> Unit,
+    onNavigateToAddPat: () -> Unit,
     viewModel: SettingsViewModel = viewModel { SettingsViewModel() }
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAccountsSheet by remember { mutableStateOf(false) }
 
+    // Refresh token state when returning to this screen
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val lifecycleState by lifecycle.currentStateFlow.collectAsState()
+    LaunchedEffect(lifecycleState) {
+        if (lifecycleState == Lifecycle.State.RESUMED) viewModel.refresh()
+    }
+
     if (showAccountsSheet) {
-        AccountsSheet(onDismiss = { showAccountsSheet = false })
+        AccountsSheet(
+            onDismiss = { showAccountsSheet = false },
+            onAddAccount = { showAccountsSheet = false; onNavigateToAddPat() }
+        )
     }
 
     Scaffold(

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -52,6 +53,12 @@ kotlin {
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.lifecycle.viewmodelCompose)
                 implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.navigation.compose)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.serialization.kotlinx.json)
+                implementation(libs.ktor.client.auth)
             }
         }
         val commonTest by getting {
@@ -63,6 +70,7 @@ kotlin {
             dependencies {
                 implementation(libs.compose.uiToolingPreview)
                 implementation(libs.androidx.activity.compose)
+                implementation(libs.ktor.client.android)
             }
         }
         val jvmMain by getting {
@@ -73,6 +81,9 @@ kotlin {
         }
         val webMain by creating {
             dependsOn(commonMain)
+            dependencies {
+                implementation(libs.ktor.client.js)
+            }
         }
         val jsMain by getting {
             dependsOn(webMain)
@@ -82,6 +93,9 @@ kotlin {
         }
         val iosMain by creating {
             dependsOn(commonMain)
+            dependencies {
+                implementation(libs.ktor.client.darwin)
+            }
         }
         val iosArm64Main by getting {
             dependsOn(iosMain)
