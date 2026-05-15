@@ -63,7 +63,10 @@ fun MainScreen(onNavigateToProfile: () -> Unit = {}) {
                 tabs.forEachIndexed { index, titleRes ->
                     NavigationBarItem(
                         selected = selectedTab == index,
-                        onClick = { selectedTab = index },
+                        onClick = {
+                            if (index == 3) onNavigateToProfile()
+                            else selectedTab = index
+                        },
                         icon = {
                             Icon(
                                 imageVector = if (selectedTab == index) selectedIcons[index] else unselectedIcons[index],
