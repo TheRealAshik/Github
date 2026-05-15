@@ -38,6 +38,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Install dependencies for Linux distributables
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fakeroot dpkg dpkg-dev
       - name: Build Desktop Distributable
         run: ./gradlew :composeApp:packageDistributionForCurrentOS
       - name: Upload Desktop Artifacts
@@ -83,7 +87,7 @@ jobs:
           xcodebuild -project iosApp/iosApp.xcodeproj \
             -scheme iosApp \
             -destination "generic/platform=iOS Simulator" \
-            CONFIGURATION_BUILD_DIR=iosApp/build
+            CONFIGURATION_BUILD_DIR=$PWD/iosApp/build
       - name: Zip iOS App
         run: |
           cd iosApp/build
