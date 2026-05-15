@@ -286,4 +286,7 @@
     <string name="code_preview_hello_world">"Hello, World!"</string>
     <string name="code_preview_end">)\n}</string>
     <string name="retry">Retry</string>
+    <string name="followers_following_format">%1$d followers · %2$d following</string>
+    <string name="cd_github_logo">GitHub Logo</string>
+    <string name="app_name_display">GitHub</string>
 </resources>

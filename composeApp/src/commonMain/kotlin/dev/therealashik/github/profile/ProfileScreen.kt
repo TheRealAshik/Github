@@ -86,7 +86,7 @@ fun ProfileScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(state.message, color = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
-                        Button(onClick = viewModel::loadData) { Text("Retry") }
+                        Button(onClick = viewModel::loadData) { Text(stringResource(Res.string.retry)) }
                     }
                 }
             }
@@ -209,7 +209,7 @@ private fun HeaderSection(state: ProfileUiState.Success) {
             )
             Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
             Text(
-                text = "${state.followers} followers · ${state.following} following",
+                text = stringResource(Res.string.followers_following_format, state.followers, state.following),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

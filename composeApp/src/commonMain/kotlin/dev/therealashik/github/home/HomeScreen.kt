@@ -83,7 +83,7 @@ fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}) {
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
-                        Button(onClick = onRetry) { Text("Retry") }
+                        Button(onClick = onRetry) { Text(stringResource(Res.string.retry)) }
                     }
                 }
             }

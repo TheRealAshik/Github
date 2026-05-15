@@ -25,8 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import github.composeapp.generated.resources.Res
 import github.composeapp.generated.resources.compose_multiplatform
+import github.composeapp.generated.resources.*
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun SplashScreen(onSplashFinished: () -> Unit) {
@@ -55,12 +57,12 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
             ) {
                 Image(
                     painter = painterResource(Res.drawable.compose_multiplatform),
-                    contentDescription = "GitHub Logo",
+                    contentDescription = stringResource(Res.string.cd_github_logo),
                     modifier = Modifier.size(120.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = "GitHub",
+                    text = stringResource(Res.string.app_name_display),
                     style = MaterialTheme.typography.displayMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
