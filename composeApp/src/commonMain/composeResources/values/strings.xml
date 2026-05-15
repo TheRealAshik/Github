@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Back</string>
+    <string name="create">Create</string>
+    <string name="more_options">More options</string>
+    <string name="add_to_list">ADD TO LIST</string>
+    <string name="star">Star</string>
+    <string name="fork">Fork</string>
+    <string name="watch">Watch</string>
+    <string name="issues">Issues</string>
+    <string name="pull_requests">Pull Requests</string>
+    <string name="discussions">Discussions</string>
+    <string name="actions">Actions</string>
+    <string name="releases">Releases</string>
+    <string name="contributors">Contributors</string>
+    <string name="watchers">Watchers</string>
+    <string name="latest">Latest</string>
+    <string name="current_branch">Current branch</string>
+    <string name="change">CHANGE</string>
+    <string name="code">Code</string>
+    <string name="commits">Commits</string>
+    <string name="readme_md">README.md</string>
+    <string name="edit">EDIT</string>
+    <string name="open_filter">Open ▾</string>
+    <string name="draft_filter">Draft</string>
+    <string name="label_filter">Label ▾</string>
+    <string name="author_filter">Author ▾</string>
+    <string name="assignee_filter">Assignee ▾</string>
+    <string name="search">Search</string>
+    <string name="compare_changes">Compare changes</string>
+    <string name="close">Close</string>
+    <string name="choose_branches">Choose branches</string>
+    <string name="base">base:</string>
+    <string name="main_branch_dropdown">main ▾</string>
+    <string name="compare">compare:</string>
+    <string name="select_branch">SELECT BRANCH</string>
+    <string name="choose_branch_to_compare">Choose a branch to compare changes</string>
+    <string name="stars_count_format">☆ %1$d stars</string>
+    <string name="forks_count_format">⑂ %1$d fork</string>
+    <string name="pr_number_format">#%1$d</string>
+    <string name="checks_format">✓ %1$s</string>
+    <string name="comments_count_format">💬 %1$d</string>
+</resources>
