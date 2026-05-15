@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Settings Screen -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_notifications">Notifications</string>
+    <string name="settings_notification_options">Notification Options</string>
+    <string name="settings_section_general">General</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_follow_system">Follow system</string>
+    <string name="settings_code_options">Code Options</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_accounts">Accounts</string>
+    <string name="settings_app_lock">App Lock</string>
+    <string name="settings_section_subscriptions">Subscriptions</string>
+    <string name="settings_copilot">Copilot</string>
+    <string name="settings_copilot_free">Copilot Free</string>
+    <string name="settings_section_more_options">More Options</string>
+    <string name="settings_share_feedback">Share Feedback</string>
+    <string name="settings_get_help">Get Help</string>
+    <string name="settings_terms_of_service">Terms of Service</string>
+    <string name="settings_privacy_policy">Privacy Policy &amp; Analytics</string>
+    <string name="settings_open_source_libraries">Open Source Libraries</string>
+    <string name="settings_sign_out">Sign Out</string>
+    <string name="settings_app_version">GitHub Mobile v1.258.0-beta (10323)</string>
+
+    <!-- Notification Options Screen -->
+    <string name="notification_options_title">Notifications</string>
+    <string name="notification_options_section_general">General</string>
+    <string name="notification_options_system_options">System Options</string>
+    <string name="notification_options_system_options_desc">Configure notifications for this device</string>
+    <string name="notification_options_working_hours">Working hours</string>
+    <string name="notification_options_working_hours_desc">Allow push notifications every day from 9:00 am to 5:00 pm</string>
+    <string name="notification_options_section_push_types">Push Notifications Types</string>
+    <string name="notification_options_direct_mentions">Direct Mentions</string>
+    <string name="notification_options_review_requested">Review Requested</string>
+    <string name="notification_options_assigned">Assigned</string>
+    <string name="notification_options_deployment_review">Deployment Review</string>
+    <string name="notification_options_pull_request_review">Pull Request Review</string>
+    <string name="notification_options_workflow_runs">Workflow Runs</string>
+    <string name="notification_options_failed_workflows">Failed Workflows Only</string>
+    <string name="notification_options_section_live">Live notifications</string>
+    <string name="notification_options_live_agent">Live Agent Updates</string>
+    <string name="notification_options_live_agent_desc">Get live updates for your background tasks</string>
+    <string name="notification_options_section_swipe">Swipe Options</string>
+    <string name="notification_options_left_swipe">Left swipe</string>
+    <string name="notification_options_mark_as_done">Mark as done</string>
+    <string name="notification_options_right_swipe">Right swipe</string>
+    <string name="notification_options_unsubscribe">Unsubscribe</string>
+    <string name="notification_options_change">CHANGE</string>
+
+    <!-- Code Options Screen -->
+    <string name="code_options_title">Code Options</string>
+    <string name="code_options_scrollable_file_path">Scrollable File Path</string>
+    <string name="code_options_show_line_numbers">Show line numbers</string>
+    <string name="code_options_always_dark_theme">Always use dark theme</string>
+    <string name="code_options_override_font_size">Override system font size</string>
+    <string name="code_options_wrap_lines">Wrap lines</string>
+    <string name="code_options_preview">Preview</string>
+
+    <!-- Accounts Sheet -->
+    <string name="accounts_sheet_title">Accounts</string>
+    <string name="accounts_sheet_edit">EDIT</string>
+    <string name="accounts_sheet_add_account">+ ADD ACCOUNT</string>
+
+    <!-- Code Preview Placeholder Strings -->
+    <string name="code_preview_file_path">main.kt</string>
+    <string name="code_preview_content">fun main() {\n    println("Hello, World!")\n}</string>
+
+    <!-- Content Descriptions and other hardcoded strings -->
+    <string name="content_description_back">Back</string>
+    <string name="content_description_close">Close</string>
+    <string name="content_description_collapse">Collapse</string>
+    <string name="content_description_copy">Copy</string>
+    <string name="content_description_more">More</string>
+    <string name="content_description_system_settings">System Settings</string>
+    <string name="content_description_swipe_preview_icon">Swipe Preview Icon</string>
+    <string name="content_description_active_account">Active account</string>
+
+    <string name="code_preview_fun">fun </string>
+    <string name="code_preview_main">main() {\n    </string>
+    <string name="code_preview_println">println(</string>
+    <string name="code_preview_hello_world">"Hello, World!"</string>
+    <string name="code_preview_end">)\n}</string>
+</resources>
