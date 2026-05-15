@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">GitHub</string>
+
     <!-- General -->
     <string name="back">Back</string>
     <string name="create">Create</string>
@@ -48,6 +50,50 @@
     <string name="tab_inbox">Inbox</string>
     <string name="tab_explore">Explore</string>
     <string name="tab_copilot">Copilot</string>
+    <string name="title_home">Home</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_search">Search</string>
+    <string name="cd_refresh">Refresh</string>
+    <string name="cd_create">Create</string>
+    <string name="cd_user_avatar">User Avatar</string>
+    <string name="cd_overflow">More options</string>
+    <string name="cd_repo_icon">Repository</string>
+    <string name="cd_org_icon">Organization</string>
+    <string name="cd_issue_icon">Issue</string>
+    <string name="cd_pr_icon">Pull Request</string>
+    <string name="cd_favorite_icon">Favorite</string>
+
+    <!-- Sections -->
+    <string name="section_my_work">My Work</string>
+    <string name="section_favorites">Favorites</string>
+    <string name="section_shortcuts">Shortcuts</string>
+    <string name="section_recent">Recent</string>
+
+    <!-- My Work items -->
+    <string name="my_work_repos">Top Repositories</string>
+    <string name="my_work_orgs">Organizations</string>
+
+    <!-- Mock data - Favorites -->
+    <string name="fav_synapsesrc">synapseSRC</string>
+    <string name="fav_synapseapp">synapseApp</string>
+    <string name="fav_therealashik">TheRealAshik</string>
+    <string name="fav_jules">Jules</string>
+
+    <!-- Mock data - Shortcuts -->
+    <string name="shortcut_issues">Issues</string>
+    <string name="shortcut_mentioned">Mentioned</string>
+
+    <!-- Mock data - Recent -->
+    <string name="recent_repo_path">TheRealAshik/Jules</string>
+    <string name="recent_time_1">2h</string>
+    <string name="recent_time_2">1d</string>
+    <string name="recent_title_1">Fix bottom navigation rendering issue</string>
+    <string name="recent_subtitle_1">You received a review</string>
+    <string name="recent_title_2">Add Compose Multiplatform to project</string>
+    <string name="recent_subtitle_2">You opened this pull request</string>
+    <string name="recent_comments_3">3</string>
+    <string name="recent_comments_12">12</string>
 
     <!-- Inbox -->
     <string name="inbox_title">Inbox</string>

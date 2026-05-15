@@ -25,13 +25,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dev.therealashik.github.explore.ExploreScreen
+import dev.therealashik.github.home.HomeScreen
 import dev.therealashik.github.inbox.InboxScreen
 import github.composeapp.generated.resources.Res
-import github.composeapp.generated.resources.coming_soon
-import github.composeapp.generated.resources.tab_copilot
-import github.composeapp.generated.resources.tab_explore
-import github.composeapp.generated.resources.tab_home
-import github.composeapp.generated.resources.tab_inbox
+import github.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -43,35 +40,33 @@ fun MainScreen() {
         Res.string.tab_explore,
         Res.string.tab_copilot
     )
-    val outlinedIcons = listOf(
-        Icons.Outlined.Home,
-        Icons.Outlined.Email,
-        Icons.Outlined.Search,
-        Icons.Outlined.Person
-    )
-    val filledIcons = listOf(
+    val selectedIcons = listOf(
         Icons.Filled.Home,
         Icons.Filled.Email,
         Icons.Filled.Search,
         Icons.Filled.Person
+    )
+    val unselectedIcons = listOf(
+        Icons.Outlined.Home,
+        Icons.Outlined.Email,
+        Icons.Outlined.Search,
+        Icons.Outlined.Person
     )
 
     Scaffold(
         bottomBar = {
             NavigationBar {
                 tabs.forEachIndexed { index, titleRes ->
-                    val title = stringResource(titleRes)
                     NavigationBarItem(
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
                         icon = {
-                            if (selectedTab == index) {
-                                Icon(filledIcons[index], contentDescription = title)
-                            } else {
-                                Icon(outlinedIcons[index], contentDescription = title)
-                            }
+                            Icon(
+                                imageVector = if (selectedTab == index) selectedIcons[index] else unselectedIcons[index],
+                                contentDescription = stringResource(titleRes)
+                            )
                         },
-                        label = { Text(title) }
+                        label = { Text(stringResource(titleRes)) }
                     )
                 }
             }
@@ -83,6 +78,7 @@ fun MainScreen() {
                 .padding(innerPadding)
         ) {
             when (selectedTab) {
+                0 -> HomeScreen()
                 1 -> InboxScreen()
                 2 -> ExploreScreen()
                 else -> Box(
