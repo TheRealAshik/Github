@@ -6,6 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -20,12 +26,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import dev.therealashik.github.home.HomeScreen
+import github.composeapp.generated.resources.Res
+import github.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MainScreen() {
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Home", "Inbox", "Explore", "Copilot")
-    val icons = listOf(
+    val tabs = listOf(
+        Res.string.tab_home,
+        Res.string.tab_inbox,
+        Res.string.tab_explore,
+        Res.string.tab_copilot
+    )
+    val selectedIcons = listOf(
+        Icons.Filled.Home,
+        Icons.Filled.Email,
+        Icons.Filled.Search,
+        Icons.Filled.Person
+    )
+    val unselectedIcons = listOf(
         Icons.Outlined.Home,
         Icons.Outlined.Email,
         Icons.Outlined.Search,
@@ -35,12 +56,17 @@ fun MainScreen() {
     Scaffold(
         bottomBar = {
             NavigationBar {
-                tabs.forEachIndexed { index, title ->
+                tabs.forEachIndexed { index, titleRes ->
                     NavigationBarItem(
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
-                        icon = { Icon(icons[index], contentDescription = title) },
-                        label = { Text(title) }
+                        icon = {
+                            Icon(
+                                imageVector = if (selectedTab == index) selectedIcons[index] else unselectedIcons[index],
+                                contentDescription = stringResource(titleRes)
+                            )
+                        },
+                        label = { Text(stringResource(titleRes)) }
                     )
                 }
             }
@@ -49,10 +75,19 @@ fun MainScreen() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
+                .padding(innerPadding)
         ) {
-            Text("Coming soon")
+            when (selectedTab) {
+                0 -> HomeScreen()
+                else -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(stringResource(Res.string.coming_soon))
+                    }
+                }
+            }
         }
     }
 }

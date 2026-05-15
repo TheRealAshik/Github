@@ -59,6 +59,16 @@ composeApp/src/
 - Never use Android or iOS APIs directly in `commonMain`. Use `expect/actual`.
 - `androidMain` and `iosMain` contain only thin platform bridges.
 
+## No Hardcoding Policy
+
+Strict rules apply to all UI implementations. **NO EXCEPTIONS**:
+- All user-visible strings → `strings.xml` + `stringResource()`
+- All colors → `MaterialTheme.colorScheme.*` only
+- All dimensions/spacing → `MaterialTheme` tokens or named `Dp` constants; never inline magic numbers
+- All typography → `MaterialTheme.typography.*` only
+- All shapes → `MaterialTheme.shapes.*` only
+- Follow M3 Expressive: use expressive color roles, shape morphing, and motion tokens where applicable
+
 ## What Agents Should NOT Do
 
 - Do not modify `local.properties`.
