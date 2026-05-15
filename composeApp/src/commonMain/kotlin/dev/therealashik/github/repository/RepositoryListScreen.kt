@@ -84,21 +84,32 @@ fun RepositoryListScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            FilterChipsRow()
-            Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
-            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(uiState.repositories) { repo ->
-                    RepositoryItemRow(repo = repo)
+        when (val state = uiState) {
+            is RepositoryListUiState.Loading -> {
+                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            is RepositoryListUiState.Error -> {
+                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(state.message, color = MaterialTheme.colorScheme.error)
+                        Spacer(Modifier.height(Dimens.SpacingMedium))
+                        Button(onClick = { viewModel.loadData() }) { Text(stringResource(Res.string.retry)) }
+                    }
+                }
+            }
+            is RepositoryListUiState.Success -> {
+                Column(Modifier.fillMaxSize().padding(innerPadding)) {
+                    FilterChipsRow()
+                    Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
                     HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                    LazyColumn(Modifier.fillMaxSize()) {
+                        items(state.repositories) { repo ->
+                            RepositoryItemRow(repo = repo)
+                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+                        }
+                    }
                 }
             }
         }
