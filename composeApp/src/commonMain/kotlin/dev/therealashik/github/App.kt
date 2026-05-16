@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,13 +22,21 @@ import dev.therealashik.github.settings.AddPatScreen
 import dev.therealashik.github.settings.CodeOptionsScreen
 import dev.therealashik.github.settings.NotificationOptionsScreen
 import dev.therealashik.github.settings.SettingsScreen
+import dev.therealashik.github.settings.ThemePreference
+import dev.therealashik.github.settings.ThemeStateHolder
 
 private val LightColorScheme = lightColorScheme()
 private val DarkColorScheme = darkColorScheme()
 
 @Composable
 fun App() {
-    val colorScheme = if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
+    val themePreference by ThemeStateHolder.themePreference.collectAsState()
+
+    val colorScheme = when (themePreference) {
+        ThemePreference.SYSTEM -> if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
+        ThemePreference.LIGHT -> LightColorScheme
+        ThemePreference.DARK -> DarkColorScheme
+    }
 
     MaterialTheme(colorScheme = colorScheme) {
         val navController = rememberNavController()
