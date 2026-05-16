@@ -4,8 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.therealashik.github.data.GitHubApiClient
 import dev.therealashik.github.data.createTokenStorage
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -17,6 +20,9 @@ class SettingsViewModel : ViewModel() {
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     val themePreference: StateFlow<ThemePreference> = ThemeStateHolder.themePreference.asStateFlow()
+
+    private val _signOutEvent = MutableSharedFlow<Unit>()
+    val signOutEvent: SharedFlow<Unit> = _signOutEvent.asSharedFlow()
 
     init {
         refresh()
@@ -51,6 +57,13 @@ class SettingsViewModel : ViewModel() {
                 emptyList()
             }
             _uiState.value = _uiState.value.copy(accounts = accounts)
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            tokenStorage.clearToken()
+            _signOutEvent.emit(Unit)
         }
     }
 

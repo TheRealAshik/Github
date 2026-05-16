@@ -34,5 +34,6 @@ data class PopularRepo(
 data class OrgSummary(
     val id: Long,
     val login: String,
-    val avatarUrl: String
+    val avatarUrl: String,
+    val description: String? = null
 )
