@@ -169,6 +169,8 @@
     <string name="nav_starred">Starred</string>
     <string name="nav_projects">Projects</string>
 
+    <string name="starred_title">Starred</string>
+
     <!-- Repository List Screen -->
     <string name="repo_list_title">Repositories</string>
     <string name="repo_owner">TheRealAshik</string>

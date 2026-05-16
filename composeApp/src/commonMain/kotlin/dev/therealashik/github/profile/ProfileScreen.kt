@@ -34,6 +34,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     onBack: () -> Unit,
     onNavigateToRepositories: () -> Unit,
+    onNavigateToStarred: () -> Unit,
     onNavigateToSettings: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -105,7 +106,8 @@ fun ProfileScreen(
                     HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
                     NavigationListSection(
                         state = state,
-                        onNavigateToRepositories = onNavigateToRepositories
+                        onNavigateToRepositories = onNavigateToRepositories,
+                        onNavigateToStarred = onNavigateToStarred
                     )
                 }
             }
@@ -349,7 +351,8 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
 @Composable
 private fun NavigationListSection(
     state: ProfileUiState.Success,
-    onNavigateToRepositories: () -> Unit
+    onNavigateToRepositories: () -> Unit,
+    onNavigateToStarred: () -> Unit
 ) {
     Column {
         NavigationItem(
@@ -410,7 +413,7 @@ private fun NavigationListSection(
             },
             label = stringResource(Res.string.nav_starred),
             count = state.starredCount,
-            onClick = { /* TODO */ }
+            onClick = onNavigateToStarred
         )
         NavigationItem(
             icon = {
