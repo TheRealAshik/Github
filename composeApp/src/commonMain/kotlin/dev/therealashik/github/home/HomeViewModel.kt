@@ -27,10 +27,14 @@ class HomeViewModel : ViewModel() {
             val reposDeferred = async { apiClient.getUserRepos() }
             val orgsDeferred = async { apiClient.getUserOrgs() }
             val notificationsDeferred = async { apiClient.getNotifications() }
+            val starredDeferred = async { apiClient.getStarredRepos(perPage = 5) }
+            val userDeferred = async { apiClient.getAuthenticatedUser() }
 
             val repos = reposDeferred.await()
             val orgs = orgsDeferred.await()
             val notifications = notificationsDeferred.await()
+            val starred = starredDeferred.await()
+            val user = userDeferred.await()
 
             if (repos.isFailure && orgs.isFailure && notifications.isFailure) {
                 _uiState.value = HomeUiState.Error(repos.exceptionOrNull()?.message ?: "Failed to load data")
@@ -38,6 +42,15 @@ class HomeViewModel : ViewModel() {
             }
 
             _uiState.value = HomeUiState.Success(
+                avatarUrl = user.getOrNull()?.avatarUrl ?: "",
+                starred = starred.getOrDefault(emptyList()).map { repo ->
+                    StarredItem(
+                        id = repo.id,
+                        name = repo.name,
+                        ownerLogin = repo.owner?.login ?: "",
+                        ownerAvatarUrl = repo.owner?.avatarUrl ?: ""
+                    )
+                },
                 repos = repos.getOrDefault(emptyList()).map { repo ->
                     RepoItem(
                         id = repo.id,

@@ -76,6 +76,9 @@
     <!-- My Work items -->
     <string name="my_work_repos">Top Repositories</string>
     <string name="my_work_orgs">Organizations</string>
+    <string name="shortcuts_issues">Issues</string>
+    <string name="shortcuts_mentioned">Mentioned</string>
+    <string name="no_starred_repos">No starred repositories</string>
 
     <!-- Mock data - Favorites -->
     <string name="fav_synapsesrc">synapseSRC</string>

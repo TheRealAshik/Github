@@ -6,7 +6,9 @@ sealed class HomeUiState {
     data class Success(
         val repos: List<RepoItem>,
         val orgs: List<OrgItem>,
-        val notifications: List<NotificationItem>
+        val notifications: List<NotificationItem>,
+        val starred: List<StarredItem>,
+        val avatarUrl: String
     ) : HomeUiState()
 }
 
@@ -35,4 +37,12 @@ data class NotificationItem(
     val type: String,
     val isUnread: Boolean,
     val updatedAt: String
+)
+
+
+data class StarredItem(
+    val id: Long,
+    val name: String,
+    val ownerLogin: String,
+    val ownerAvatarUrl: String
 )
