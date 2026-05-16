@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -36,6 +37,7 @@ fun SettingsScreen(
     LaunchedEffect(lifecycleState) {
         if (lifecycleState == Lifecycle.State.RESUMED) viewModel.refresh()
     }
+    val uriHandler = LocalUriHandler.current
 
     if (showAccountsSheet) {
         AccountsSheet(
@@ -120,10 +122,10 @@ fun SettingsScreen(
             // More Options Section
             item {
                 SettingsSectionHeader(stringResource(Res.string.settings_section_more_options))
-                SettingsRow(title = stringResource(Res.string.settings_share_feedback), onClick = { /* TODO */ })
-                SettingsRow(title = stringResource(Res.string.settings_get_help), onClick = { /* TODO */ })
-                SettingsRow(title = stringResource(Res.string.settings_terms_of_service), onClick = { /* TODO */ })
-                SettingsRow(title = stringResource(Res.string.settings_privacy_policy), onClick = { /* TODO */ })
+                SettingsRow(title = stringResource(Res.string.settings_share_feedback), onClick = { uriHandler.openUri("https://github.com/mobile/feedback") })
+                SettingsRow(title = stringResource(Res.string.settings_get_help), onClick = { uriHandler.openUri("https://support.github.com") })
+                SettingsRow(title = stringResource(Res.string.settings_terms_of_service), onClick = { uriHandler.openUri("https://docs.github.com/en/site-policy/github-terms/github-terms-of-service") })
+                SettingsRow(title = stringResource(Res.string.settings_privacy_policy), onClick = { uriHandler.openUri("https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement") })
                 SettingsRow(title = stringResource(Res.string.settings_open_source_libraries), onClick = { /* TODO */ })
                 SettingsRow(
                     title = stringResource(Res.string.settings_sign_out),
