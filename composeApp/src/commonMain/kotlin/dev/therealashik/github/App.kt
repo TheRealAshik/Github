@@ -10,6 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.therealashik.github.profile.ProfileScreen
 import dev.therealashik.github.profile.ProfileViewModel
+import dev.therealashik.github.profile.OrganizationsScreen
+import dev.therealashik.github.profile.OrganizationsViewModel
 import dev.therealashik.github.repository.RepositoryListScreen
 import dev.therealashik.github.repository.RepositoryListViewModel
 import dev.therealashik.github.settings.AddPatScreen
@@ -45,7 +47,14 @@ fun App() {
                     viewModel = ProfileViewModel(),
                     onBack = { navController.popBackStack() },
                     onNavigateToRepositories = { navController.navigate(Route.Repositories) },
-                    onNavigateToSettings = { navController.navigate(Route.Settings) }
+                    onNavigateToSettings = { navController.navigate(Route.Settings) },
+                    onNavigateToOrganizations = { navController.navigate(Route.Organizations) }
+                )
+            }
+            composable<Route.Organizations> {
+                OrganizationsScreen(
+                    viewModel = OrganizationsViewModel(),
+                    onBack = { navController.popBackStack() }
                 )
             }
             composable<Route.Repositories> {
