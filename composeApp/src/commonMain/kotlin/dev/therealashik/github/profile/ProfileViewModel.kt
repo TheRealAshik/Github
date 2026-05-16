@@ -56,6 +56,7 @@ class ProfileViewModel : ViewModel() {
                     PopularRepo(
                         id = repo.id,
                         owner = user.login,
+                        ownerAvatarUrl = user.avatarUrl,
                         name = repo.name,
                         description = repo.description,
                         stars = repo.stars,

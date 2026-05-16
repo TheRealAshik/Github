@@ -39,6 +39,7 @@ fun SettingsScreen(
 
     if (showAccountsSheet) {
         AccountsSheet(
+            accounts = uiState.accounts,
             onDismiss = { showAccountsSheet = false },
             onAddAccount = { showAccountsSheet = false; onNavigateToAddPat() }
         )

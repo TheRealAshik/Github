@@ -31,12 +31,9 @@ data class AccountItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountsSheet(
+    accounts: List<AccountItem>,
     onDismiss: () -> Unit,
-    onAddAccount: () -> Unit,
-    accounts: List<AccountItem> = listOf(
-        AccountItem("therealashik", 5, true),
-        AccountItem("work-account", 0, false)
-    )
+    onAddAccount: () -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,

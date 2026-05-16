@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import dev.therealashik.github.Dimens
 import github.composeapp.generated.resources.Res
 import github.composeapp.generated.resources.*
@@ -49,65 +48,188 @@ fun RepositoryListScreen(
                         )
                         Text(
                             text = stringResource(Res.string.repo_list_title),
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.onSurface
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                         )
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(Res.string.back)
-                        )
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Res.string.back))
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(
-                            imageVector = Icons.Outlined.Search,
-                            contentDescription = stringResource(Res.string.search)
-                        )
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Outlined.Search, contentDescription = stringResource(Res.string.search))
                     }
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = stringResource(Res.string.add)
-                        )
+                    IconButton(onClick = {}) {
+                        Icon(Icons.Filled.Add, contentDescription = stringResource(Res.string.add))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
-                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow
     ) { innerPadding ->
         when (val state = uiState) {
-            is RepositoryListUiState.Loading -> {
-                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+            is RepositoryListUiState.Loading -> Box(
+                Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) { CircularProgressIndicator() }
+
+            is RepositoryListUiState.Error -> Box(
+                Modifier.fillMaxSize().padding(innerPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(state.message, color = MaterialTheme.colorScheme.error)
+                    Spacer(Modifier.height(Dimens.SpacingMedium))
+                    Button(onClick = { viewModel.loadData() }) { Text(stringResource(Res.string.retry)) }
                 }
             }
-            is RepositoryListUiState.Error -> {
-                Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(state.message, color = MaterialTheme.colorScheme.error)
-                        Spacer(Modifier.height(Dimens.SpacingMedium))
-                        Button(onClick = { viewModel.loadData() }) { Text(stringResource(Res.string.retry)) }
+
+            is RepositoryListUiState.Success -> {
+                val grouped = state.repositories.groupBy { it.language ?: "Other" }
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentPadding = PaddingValues(
+                        horizontal = Dimens.SpacingMedium,
+                        vertical = Dimens.SpacingSmall
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.SpacingSmall)
+                ) {
+                    item { FilterChipsRow() }
+
+                    grouped.forEach { (language, repos) ->
+                        stickyHeader(key = "header_$language") {
+                            GroupHeader(label = language)
+                        }
+                        items(repos, key = { it.id }) { repo ->
+                            RepositoryCard(repo = repo)
+                        }
                     }
                 }
             }
-            is RepositoryListUiState.Success -> {
-                Column(Modifier.fillMaxSize().padding(innerPadding)) {
-                    FilterChipsRow()
-                    Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-                    LazyColumn(Modifier.fillMaxSize()) {
-                        items(state.repositories) { repo ->
-                            RepositoryItemRow(repo = repo)
-                            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun GroupHeader(label: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.surfaceContainerLow
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(vertical = Dimens.SpacingSmall, horizontal = Dimens.SpacingExtraSmall),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingSmall)
+        ) {
+            Box(
+                Modifier
+                    .size(Dimens.IndicatorSize)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun RepositoryCard(repo: RepositoryItem) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Dimens.CardHeight),
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        ),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = Dimens.SpacingExtraSmall)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(Dimens.SpacingMedium),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpacingExtraSmall)) {
+                Text(
+                    text = repo.name,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                if (repo.description != null) {
+                    Text(
+                        text = repo.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpacingExtraSmall)) {
+                if (repo.forkedFrom != null) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Outlined.ForkRight,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(Dimens.IconSizeSmall)
+                        )
+                        Spacer(Modifier.width(Dimens.SpacingExtraSmall))
+                        Text(
+                            text = repo.forkedFrom,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingMedium)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Filled.Star,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(Dimens.IconSizeSmall)
+                        )
+                        Spacer(Modifier.width(Dimens.SpacingExtraSmall))
+                        Text(
+                            text = repo.stars.toString(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    if (repo.language != null) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                Modifier
+                                    .size(Dimens.IndicatorSize)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.tertiary)
+                            )
+                            Spacer(Modifier.width(Dimens.SpacingExtraSmall))
+                            Text(
+                                text = repo.language,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     }
                 }
@@ -122,7 +244,7 @@ private fun FilterChipsRow() {
         modifier = Modifier
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
-            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
+            .padding(vertical = Dimens.SpacingSmall),
         horizontalArrangement = Arrangement.spacedBy(Dimens.SpacingSmall)
     ) {
         FilterChipItem(label = stringResource(Res.string.filter_all))
@@ -135,100 +257,21 @@ private fun FilterChipsRow() {
 private fun FilterChipItem(label: String) {
     Surface(
         shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        tonalElevation = Dimens.SpacingExtraSmall
     ) {
         Row(
             modifier = Modifier.padding(horizontal = Dimens.SpacingMediumSmall, vertical = Dimens.SpacingSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
+            Text(text = label, style = MaterialTheme.typography.labelMedium)
+            Spacer(Modifier.width(Dimens.SpacingExtraSmall))
             Icon(
-                imageVector = Icons.Filled.ArrowDropDown,
+                Icons.Filled.ArrowDropDown,
                 contentDescription = null,
                 modifier = Modifier.size(Dimens.SpacingMedium)
             )
-        }
-    }
-}
-
-@Composable
-private fun RepositoryItemRow(repo: RepositoryItem) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dimens.SpacingMedium)
-    ) {
-        Text(
-            text = repo.name,
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        if (repo.description != null) {
-            Spacer(modifier = Modifier.height(Dimens.SpacingExtraSmall))
-            Text(
-                text = repo.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-
-        if (repo.forkedFrom != null) {
-            Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Outlined.ForkRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(Dimens.SpacingMedium)
-                )
-                Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
-                Text(
-                    text = repo.forkedFrom,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(Dimens.SpacingMediumSmall))
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                imageVector = Icons.Filled.Star,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(Dimens.SpacingMedium)
-            )
-            Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
-            Text(
-                text = repo.stars.toString(),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-
-            if (repo.language != null) {
-                Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
-                Box(
-                    modifier = Modifier
-                        .size(Dimens.IndicatorSize)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary) // Primary for purple dot
-                )
-                Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
-                Text(
-                    text = repo.language,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
         }
     }
 }

@@ -24,6 +24,7 @@ sealed class ProfileUiState {
 data class PopularRepo(
     val id: Long,
     val owner: String,
+    val ownerAvatarUrl: String,
     val name: String,
     val description: String?,
     val stars: Int,

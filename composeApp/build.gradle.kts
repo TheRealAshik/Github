@@ -59,6 +59,8 @@ kotlin {
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.serialization.kotlinx.json)
                 implementation(libs.ktor.client.auth)
+                implementation(libs.coil3.compose)
+                implementation(libs.coil3.network.ktor)
             }
         }
         val commonTest by getting {

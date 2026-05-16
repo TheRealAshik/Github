@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import dev.therealashik.github.Dimens
 import github.composeapp.generated.resources.Res
 import github.composeapp.generated.resources.*
@@ -130,11 +131,10 @@ private fun HeaderSection(state: ProfileUiState.Success) {
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
+                AsyncImage(
+                    model = state.avatarUrl,
                     contentDescription = null,
-                    modifier = Modifier.size(Dimens.IconSizeExtraLarge),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    modifier = Modifier.fillMaxSize()
                 )
             }
 
@@ -273,20 +273,13 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
                             .fillMaxWidth()
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(
+                            AsyncImage(
+                                model = repo.ownerAvatarUrl,
+                                contentDescription = null,
                                 modifier = Modifier
                                     .size(Dimens.AvatarSmall)
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Person,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(Dimens.SpacingMediumSmall),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
+                            )
                             Spacer(modifier = Modifier.width(Dimens.SpacingSmall))
                             Text(
                                 text = repo.owner,
