@@ -35,7 +35,8 @@ fun ProfileScreen(
     onBack: () -> Unit,
     onNavigateToRepositories: () -> Unit,
     onNavigateToStarred: () -> Unit,
-    onNavigateToSettings: () -> Unit = {}
+    onNavigateToSettings: () -> Unit,
+    onNavigateToOrganizations: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -107,7 +108,8 @@ fun ProfileScreen(
                     NavigationListSection(
                         state = state,
                         onNavigateToRepositories = onNavigateToRepositories,
-                        onNavigateToStarred = onNavigateToStarred
+                        onNavigateToStarred = onNavigateToStarred,
+                        onNavigateToOrganizations = onNavigateToOrganizations
                     )
                 }
             }
@@ -352,7 +354,8 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
 private fun NavigationListSection(
     state: ProfileUiState.Success,
     onNavigateToRepositories: () -> Unit,
-    onNavigateToStarred: () -> Unit
+    onNavigateToStarred: () -> Unit,
+    onNavigateToOrganizations: () -> Unit
 ) {
     Column {
         NavigationItem(
@@ -393,7 +396,7 @@ private fun NavigationListSection(
             },
             label = stringResource(Res.string.nav_organizations),
             count = state.orgs.size,
-            onClick = { /* TODO */ }
+            onClick = onNavigateToOrganizations
         )
         NavigationItem(
             icon = {

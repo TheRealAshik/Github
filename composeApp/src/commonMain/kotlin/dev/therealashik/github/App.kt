@@ -10,6 +10,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.therealashik.github.profile.ProfileScreen
 import dev.therealashik.github.profile.ProfileViewModel
+import dev.therealashik.github.profile.OrganizationsScreen
+import dev.therealashik.github.profile.OrganizationsViewModel
 import dev.therealashik.github.profile.StarredScreen
 import dev.therealashik.github.profile.StarredViewModel
 import dev.therealashik.github.repository.RepositoryListScreen
@@ -48,7 +50,14 @@ fun App() {
                     onBack = { navController.popBackStack() },
                     onNavigateToRepositories = { navController.navigate(Route.Repositories) },
                     onNavigateToStarred = { navController.navigate(Route.Starred) },
-                    onNavigateToSettings = { navController.navigate(Route.Settings) }
+                    onNavigateToSettings = { navController.navigate(Route.Settings) },
+                    onNavigateToOrganizations = { navController.navigate(Route.Organizations) }
+                )
+            }
+            composable<Route.Organizations> {
+                OrganizationsScreen(
+                    viewModel = OrganizationsViewModel(),
+                    onBack = { navController.popBackStack() }
                 )
             }
             composable<Route.Starred> {

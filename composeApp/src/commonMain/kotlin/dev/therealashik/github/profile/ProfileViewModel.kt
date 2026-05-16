@@ -63,7 +63,7 @@ class ProfileViewModel : ViewModel() {
                         language = repo.language
                     )
                 },
-                orgs = orgs.map { OrgSummary(it.id, it.login, it.avatarUrl) },
+                orgs = orgs.map { OrgSummary(it.id, it.login, it.avatarUrl, it.description) },
                 starredCount = starred.size,
                 statusEmoji = status?.emoji,
                 statusMessage = status?.message

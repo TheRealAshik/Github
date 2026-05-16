@@ -166,6 +166,7 @@
     <!-- Profile Navigation List -->
     <string name="nav_repositories">Repositories</string>
     <string name="nav_organizations">Organizations</string>
+    <string name="orgs_empty_state">No organizations found</string>
     <string name="nav_starred">Starred</string>
     <string name="nav_projects">Projects</string>
 
