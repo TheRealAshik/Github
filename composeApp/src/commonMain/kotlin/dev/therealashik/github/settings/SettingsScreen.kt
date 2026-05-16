@@ -26,6 +26,7 @@ fun SettingsScreen(
     onNavigateToNotificationOptions: () -> Unit,
     onNavigateToCodeOptions: () -> Unit,
     onNavigateToAddPat: () -> Unit,
+    onSignOut: () -> Unit,
     viewModel: SettingsViewModel = viewModel { SettingsViewModel() }
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -38,6 +39,12 @@ fun SettingsScreen(
         if (lifecycleState == Lifecycle.State.RESUMED) viewModel.refresh()
     }
     val uriHandler = LocalUriHandler.current
+
+    LaunchedEffect(Unit) {
+        viewModel.signOutEvent.collect {
+            onSignOut()
+        }
+    }
 
     if (showAccountsSheet) {
         AccountsSheet(
@@ -130,7 +137,7 @@ fun SettingsScreen(
                 SettingsRow(
                     title = stringResource(Res.string.settings_sign_out),
                     titleColor = MaterialTheme.colorScheme.error,
-                    onClick = { /* TODO */ }
+                    onClick = { viewModel.signOut() }
                 )
                 SectionDivider()
             }
