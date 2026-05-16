@@ -393,6 +393,26 @@ private fun NavigationListSection(
             count = state.starredCount,
             onClick = { /* TODO */ }
         )
+        NavigationItem(
+            icon = {
+                Box(
+                    modifier = Modifier
+                        .size(Dimens.IconSizeLarge)
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.ViewTimeline,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            },
+            label = stringResource(Res.string.nav_projects),
+            count = 0,
+            onClick = { /* TODO */ }
+        )
     }
 }
 
