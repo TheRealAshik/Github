@@ -25,7 +25,7 @@ class SettingsViewModel : ViewModel() {
             val token = tokenStorage.getToken()
             val accounts = if (token != null) {
                 try {
-                    val user = apiClient.getAuthenticatedUser()
+                    val user = apiClient.getAuthenticatedUser().getOrThrow()
                     listOf(AccountItem(username = user.login, notificationCount = 0, isActive = true))
                 } catch (e: Exception) {
                     emptyList()
