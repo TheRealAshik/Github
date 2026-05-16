@@ -15,7 +15,9 @@ sealed class ProfileUiState {
         val publicRepos: Int,
         val popularRepos: List<PopularRepo>,
         val orgs: List<OrgSummary>,
-        val starredCount: Int
+        val starredCount: Int,
+        val statusEmoji: String? = null,
+        val statusMessage: String? = null
     ) : ProfileUiState()
 }
 

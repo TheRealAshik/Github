@@ -4,11 +4,15 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.request.setBody
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
 data class GitHubUser(
@@ -16,9 +20,16 @@ data class GitHubUser(
     val name: String? = null,
     @SerialName("avatar_url") val avatarUrl: String,
     val bio: String? = null,
+    val company: String? = null,
+    val location: String? = null,
     val followers: Int = 0,
     val following: Int = 0,
     @SerialName("public_repos") val publicRepos: Int = 0
+)
+
+data class GitHubUserStatus(
+    val emoji: String?,
+    val message: String?
 )
 
 @Serializable
@@ -105,6 +116,22 @@ class GitHubApiClient(private val tokenStorage: TokenStorage) {
             withAuth()
             parameter("per_page", perPage)
         }.body()
+    }
+
+    suspend fun getUserStatus(): Result<GitHubUserStatus> = runCatching {
+        val query = """{"query":"{ viewer { status { emoji message } } }"}"""
+        val response: JsonObject = client.post("https://api.github.com/graphql") {
+            withAuth()
+            contentType(ContentType.Application.Json)
+            setBody(query)
+        }.body()
+        val status = response["data"]?.jsonObject
+            ?.get("viewer")?.jsonObject
+            ?.get("status")?.jsonObject
+        GitHubUserStatus(
+            emoji = status?.get("emoji")?.jsonPrimitive?.content,
+            message = status?.get("message")?.jsonPrimitive?.content
+        )
     }
 
     fun close() = client.close()

@@ -32,6 +32,7 @@ object Dimens {
 
     val IndicatorSize = 10.dp
     val CardWidth = 280.dp
+    val CardHeight = 160.dp
     val BorderWidth = 1.dp
     val BorderWidthThin = 0.5.dp
     val BadgeHeight = 18.dp

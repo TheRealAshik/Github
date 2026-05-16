@@ -163,6 +163,32 @@ private fun HeaderSection(state: ProfileUiState.Success) {
             )
         }
 
+        if (state.statusEmoji != null || state.statusMessage != null) {
+            Spacer(modifier = Modifier.height(Dimens.SpacingSmall))
+            Surface(
+                shape = MaterialTheme.shapes.small,
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                modifier = Modifier.wrapContentSize()
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = Dimens.SpacingSmall, vertical = Dimens.SpacingExtraSmall),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    state.statusEmoji?.let {
+                        Text(text = it, style = MaterialTheme.typography.bodyMedium)
+                        if (state.statusMessage != null) Spacer(modifier = Modifier.width(Dimens.SpacingExtraSmall))
+                    }
+                    state.statusMessage?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+
         if (state.company != null || state.location != null) {
             Spacer(modifier = Modifier.height(Dimens.SpacingMedium))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -235,7 +261,7 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
         ) {
             popularRepos.forEach { repo ->
                 OutlinedCard(
-                    modifier = Modifier.width(Dimens.CardWidth),
+                    modifier = Modifier.width(Dimens.CardWidth).height(Dimens.CardHeight),
                     colors = CardDefaults.outlinedCardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),

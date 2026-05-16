@@ -35,18 +35,20 @@ class ProfileViewModel : ViewModel() {
             val reposDeferred = async { apiClient.getUserRepos(perPage = 6) }
             val orgsDeferred = async { apiClient.getUserOrgs() }
             val starredDeferred = async { apiClient.getStarredRepos(perPage = 1) }
+            val statusDeferred = async { apiClient.getUserStatus() }
 
             val repos = reposDeferred.await().getOrDefault(emptyList())
             val orgs = orgsDeferred.await().getOrDefault(emptyList())
             val starred = starredDeferred.await().getOrDefault(emptyList())
+            val status = statusDeferred.await().getOrNull()
 
             _uiState.value = ProfileUiState.Success(
                 login = user.login,
                 name = user.name,
                 avatarUrl = user.avatarUrl,
                 bio = user.bio,
-                company = null,
-                location = null,
+                company = user.company,
+                location = user.location,
                 followers = user.followers,
                 following = user.following,
                 publicRepos = user.publicRepos,
@@ -61,7 +63,9 @@ class ProfileViewModel : ViewModel() {
                     )
                 },
                 orgs = orgs.map { OrgSummary(it.id, it.login, it.avatarUrl) },
-                starredCount = starred.size
+                starredCount = starred.size,
+                statusEmoji = status?.emoji,
+                statusMessage = status?.message
             )
         }
     }
