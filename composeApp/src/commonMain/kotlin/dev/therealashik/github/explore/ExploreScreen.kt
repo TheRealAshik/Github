@@ -1,7 +1,9 @@
 package dev.therealashik.github.explore
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,21 +16,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SmartToy
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.ThumbUp
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +54,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.therealashik.github.theme.Dimensions
 import github.composeapp.generated.resources.Res
@@ -58,6 +65,7 @@ import github.composeapp.generated.resources.explore_title
 import github.composeapp.generated.resources.filter_activity
 import github.composeapp.generated.resources.read_more
 import github.composeapp.generated.resources.trending_repos
+import github.composeapp.generated.resources.retry
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -67,31 +75,70 @@ fun ExploreScreen(viewModel: ExploreViewModel = viewModel { ExploreViewModel() }
     Scaffold(
         topBar = { ExploreTopBar() }
     ) { innerPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            item {
-                DiscoverSection()
-            }
-            item {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = Dimensions.PaddingSmall),
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            }
-            item {
-                ActivitySectionHeader()
-            }
-            items(
-                items = uiState.activityFeed,
-                key = { it.id }
-            ) { item ->
-                when (item) {
-                    is ContributionItem -> ContributionCard(item)
-                    is ReleaseItem -> ReleaseCard(item)
+            when (val state = uiState) {
+                is ExploreUiState.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                is ExploreUiState.Error -> {
+                    Column(
+                        modifier = Modifier.align(Alignment.Center),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(Dimensions.SpacingMedium)
+                    ) {
+                        Text(
+                            text = state.message,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Button(onClick = { viewModel.loadData() }) {
+                            Text(stringResource(Res.string.retry))
+                        }
+                    }
+                }
+                is ExploreUiState.Success -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        item {
+                            DiscoverSection()
+                        }
+                        item {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Dimensions.PaddingSmall),
+                                color = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        }
+                        item {
+                            TrendingReposSection(state.trendingRepos)
+                        }
+                        item {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(vertical = Dimensions.PaddingSmall),
+                                color = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        }
+                        item {
+                            ActivitySectionHeader()
+                        }
+                        items(
+                            items = state.activityFeed,
+                            key = { it.id }
+                        ) { item ->
+                            when (item) {
+                                is ContributionItem -> ContributionCard(item)
+                                is ReleaseItem -> ReleaseCard(item)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -105,12 +152,13 @@ private fun ExploreTopBar() {
         title = {
             Text(
                 text = stringResource(Res.string.explore_title),
-                style = MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground
         )
     )
 }
@@ -183,6 +231,101 @@ private fun DiscoverSection() {
 }
 
 @Composable
+private fun TrendingReposSection(repos: List<TrendingRepoItem>) {
+    Column(modifier = Modifier.padding(vertical = Dimensions.PaddingMedium)) {
+        Text(
+            text = stringResource(Res.string.trending_repos),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = Dimensions.PaddingMedium, end = Dimensions.PaddingMedium, bottom = Dimensions.PaddingMedium)
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(Dimensions.SpacingMedium),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = Dimensions.PaddingMedium)
+        ) {
+            items(repos, key = { it.id }) { repo ->
+                TrendingRepoCard(repo)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TrendingRepoCard(repo: TrendingRepoItem) {
+    Card(
+        modifier = Modifier
+            .width(Dimensions.TrendingRepoCardWidth)
+            .height(Dimensions.TrendingRepoCardHeight),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        shape = RoundedCornerShape(Dimensions.PaddingMedium)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(Dimensions.PaddingMedium)
+        ) {
+            Text(
+                text = repo.fullName,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(Dimensions.SpacingSmall))
+            Text(
+                text = repo.description ?: "",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.height(Dimensions.SpacingSmall))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Dimensions.SpacingMedium)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(Dimensions.IconSizeSmall)
+                    )
+                    Spacer(modifier = Modifier.width(Dimensions.SpacingExtraSmall))
+                    Text(
+                        text = repo.stars.toString(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (repo.language != null) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(Dimensions.IndicatorDotSize)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.secondary)
+                        )
+                        Spacer(modifier = Modifier.width(Dimensions.SpacingExtraSmall))
+                        Text(
+                            text = repo.language,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun ActivitySectionHeader() {
     Row(
         modifier = Modifier
@@ -201,7 +344,7 @@ private fun ActivitySectionHeader() {
             Icon(
                 imageVector = Icons.Outlined.FilterList,
                 contentDescription = stringResource(Res.string.filter_activity),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -211,10 +354,14 @@ private fun ActivitySectionHeader() {
 private fun ContributionCard(item: ContributionItem) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(Dimensions.PaddingMedium)) {
+    Column(
+        modifier = Modifier
+            .clickable { expanded = !expanded }
+            .padding(Dimensions.PaddingMedium)
+    ) {
         // Header
         Row(
-            modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded },
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -233,20 +380,20 @@ private fun ContributionCard(item: ContributionItem) {
             }
             Spacer(modifier = Modifier.width(Dimensions.SpacingSmall))
             Text(
-                text = stringResource(item.username),
+                text = item.username,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.width(Dimensions.SpacingExtraSmall))
             Text(
-                text = stringResource(item.actionText),
+                text = item.actionText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = stringResource(item.timestamp),
+                text = item.timestamp,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -266,13 +413,13 @@ private fun ContributionCard(item: ContributionItem) {
             ) {
                 Column {
                     Text(
-                        text = stringResource(item.repoPath),
+                        text = item.repoPath,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(modifier = Modifier.height(Dimensions.SpacingExtraSmall))
                     Text(
-                        text = stringResource(item.prTitle),
+                        text = item.prTitle,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
@@ -289,7 +436,7 @@ private fun ContributionCard(item: ContributionItem) {
                                 .padding(horizontal = Dimensions.PaddingSmall, vertical = Dimensions.PaddingExtraSmall)
                         ) {
                             Text(
-                                text = stringResource(item.statusText),
+                                text = item.statusText,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onTertiaryContainer
                             )
@@ -301,7 +448,7 @@ private fun ContributionCard(item: ContributionItem) {
                                 .padding(horizontal = Dimensions.PaddingSmall, vertical = Dimensions.PaddingExtraSmall)
                         ) {
                             Text(
-                                text = stringResource(item.branchName),
+                                text = item.branchName,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -309,7 +456,7 @@ private fun ContributionCard(item: ContributionItem) {
                     }
                     Spacer(modifier = Modifier.height(Dimensions.SpacingSmall))
                     Text(
-                        text = stringResource(item.bodyPreview),
+                        text = item.bodyPreview,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -389,20 +536,20 @@ private fun ReleaseCard(item: ReleaseItem) {
             }
             Spacer(modifier = Modifier.width(Dimensions.SpacingSmall))
             Text(
-                text = stringResource(item.botName),
+                text = item.botName,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.width(Dimensions.SpacingExtraSmall))
             Text(
-                text = stringResource(item.actionText),
+                text = item.actionText,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = stringResource(item.timestamp),
+                text = item.timestamp,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -427,7 +574,7 @@ private fun ReleaseCard(item: ReleaseItem) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(item.releaseTitle),
+                        text = item.releaseTitle,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
