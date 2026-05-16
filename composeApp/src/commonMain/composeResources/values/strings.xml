@@ -289,4 +289,8 @@
     <string name="followers_following_format">%1$d followers · %2$d following</string>
     <string name="cd_github_logo">GitHub Logo</string>
     <string name="app_name_display">GitHub</string>
+
+
+    <string name="explore_action_contributed">contributed to %1$s</string>
+    <string name="explore_action_published">published a release</string>
 </resources>

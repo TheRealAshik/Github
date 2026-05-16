@@ -28,4 +28,7 @@ object Dimensions {
 
     val Zero = 0.dp
     val ReleaseBannerHeight = 100.dp
+
+    val TrendingRepoCardWidth = 280.dp
+    val TrendingRepoCardHeight = 140.dp
 }

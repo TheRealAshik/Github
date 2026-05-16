@@ -1,31 +1,42 @@
 package dev.therealashik.github.explore
 
-import org.jetbrains.compose.resources.StringResource
-
 sealed class ActivityItem {
     abstract val id: String
 }
 
 data class ContributionItem(
     override val id: String,
-    val username: StringResource,
-    val actionText: StringResource,
-    val timestamp: StringResource,
-    val repoPath: StringResource,
-    val prTitle: StringResource,
-    val statusText: StringResource,
-    val branchName: StringResource,
-    val bodyPreview: StringResource
+    val username: String,
+    val actionText: String,
+    val timestamp: String,
+    val repoPath: String,
+    val prTitle: String,
+    val statusText: String,
+    val branchName: String,
+    val bodyPreview: String
 ) : ActivityItem()
 
 data class ReleaseItem(
     override val id: String,
-    val botName: StringResource,
-    val actionText: StringResource,
-    val timestamp: StringResource,
-    val releaseTitle: StringResource
+    val botName: String,
+    val actionText: String,
+    val timestamp: String,
+    val releaseTitle: String
 ) : ActivityItem()
 
-data class ExploreUiState(
-    val activityFeed: List<ActivityItem> = emptyList()
+data class TrendingRepoItem(
+    val id: String,
+    val fullName: String,
+    val description: String?,
+    val stars: Int,
+    val language: String?
 )
+
+sealed class ExploreUiState {
+    data object Loading : ExploreUiState()
+    data class Error(val message: String) : ExploreUiState()
+    data class Success(
+        val trendingRepos: List<TrendingRepoItem> = emptyList(),
+        val activityFeed: List<ActivityItem> = emptyList()
+    ) : ExploreUiState()
+}

@@ -74,6 +74,43 @@ data class NotificationRepo(
     @SerialName("full_name") val fullName: String
 )
 
+@Serializable
+data class SearchResult<T>(val items: List<T>)
+
+@Serializable
+data class GitHubEvent(
+    val id: String,
+    val type: String,
+    val actor: GitHubActor,
+    val repo: EventRepo,
+    val payload: EventPayload? = null,
+    @SerialName("created_at") val createdAt: String
+)
+
+@Serializable
+data class GitHubActor(val login: String, @SerialName("avatar_url") val avatarUrl: String)
+
+@Serializable
+data class EventRepo(val name: String)
+
+@Serializable
+data class EventPayload(
+    val action: String? = null,
+    @SerialName("pull_request") val pullRequest: EventPullRequest? = null,
+    val release: EventRelease? = null
+)
+
+@Serializable
+data class EventPullRequest(
+    val title: String, val body: String? = null, val state: String, val head: EventHead
+)
+
+@Serializable
+data class EventHead(val ref: String)
+
+@Serializable
+data class EventRelease(val name: String? = null, @SerialName("tag_name") val tagName: String)
+
 class GitHubApiClient(private val tokenStorage: TokenStorage) {
 
     private val client = HttpClient {
@@ -132,6 +169,23 @@ class GitHubApiClient(private val tokenStorage: TokenStorage) {
             emoji = status?.get("emoji")?.jsonPrimitive?.content,
             message = status?.get("message")?.jsonPrimitive?.content
         )
+    }
+
+    suspend fun getTrendingRepos(): Result<SearchResult<GitHubRepo>> = runCatching {
+        client.get("https://api.github.com/search/repositories") {
+            withAuth()
+            parameter("q", "stars:>1000")
+            parameter("sort", "stars")
+            parameter("order", "desc")
+            parameter("per_page", 10)
+        }.body()
+    }
+
+    suspend fun getReceivedEvents(username: String, perPage: Int = 20): Result<List<GitHubEvent>> = runCatching {
+        client.get("https://api.github.com/users/${username}/received_events") {
+            withAuth()
+            parameter("per_page", perPage)
+        }.body()
     }
 
     fun close() = client.close()
