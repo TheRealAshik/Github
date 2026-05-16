@@ -16,8 +16,25 @@ class SettingsViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
+    val themePreference: StateFlow<ThemePreference> = ThemeStateHolder.themePreference.asStateFlow()
+
     init {
         refresh()
+
+        viewModelScope.launch {
+            themePreference.collect { pref ->
+                val displayString = when (pref) {
+                    ThemePreference.SYSTEM -> "Follow system"
+                    ThemePreference.LIGHT -> "Light"
+                    ThemePreference.DARK -> "Dark"
+                }
+                _uiState.value = _uiState.value.copy(themeValue = displayString)
+            }
+        }
+    }
+
+    fun setTheme(preference: ThemePreference) {
+        ThemeStateHolder.themePreference.value = preference
     }
 
     fun refresh() {

@@ -28,7 +28,9 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = viewModel { SettingsViewModel() }
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val themePreference by viewModel.themePreference.collectAsState()
     var showAccountsSheet by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
 
     // Refresh token state when returning to this screen
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -83,7 +85,7 @@ fun SettingsScreen(
                 SettingsRow(
                     title = stringResource(Res.string.settings_theme),
                     subtitle = uiState.themeValue,
-                    onClick = { /* TODO */ }
+                    onClick = { showThemeDialog = true }
                 )
                 SettingsRow(
                     title = stringResource(Res.string.settings_code_options),
@@ -149,6 +151,51 @@ fun SettingsScreen(
                 }
             }
         }
+    }
+
+    if (showThemeDialog) {
+        AlertDialog(
+            onDismissRequest = { showThemeDialog = false },
+            title = { Text(text = stringResource(Res.string.settings_theme)) },
+            text = {
+                Column {
+                    ThemePreference.values().forEach { preference ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    viewModel.setTheme(preference)
+                                    showThemeDialog = false
+                                }
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = preference == themePreference,
+                                onClick = {
+                                    viewModel.setTheme(preference)
+                                    showThemeDialog = false
+                                }
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = when (preference) {
+                                    ThemePreference.SYSTEM -> stringResource(Res.string.settings_follow_system)
+                                    ThemePreference.LIGHT -> "Light"
+                                    ThemePreference.DARK -> "Dark"
+                                },
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showThemeDialog = false }) {
+                    Text(stringResource(Res.string.content_description_close))
+                }
+            }
+        )
     }
 }
 
