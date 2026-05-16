@@ -59,7 +59,12 @@ fun App() {
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateToNotificationOptions = { navController.navigate(Route.NotificationOptions) },
                     onNavigateToCodeOptions = { navController.navigate(Route.CodeOptions) },
-                    onNavigateToAddPat = { navController.navigate(Route.AddPat) }
+                    onNavigateToAddPat = { navController.navigate(Route.AddPat) },
+                    onSignOut = {
+                        navController.navigate(Route.AddPat) {
+                            popUpTo(Route.Settings) { inclusive = true }
+                        }
+                    }
                 )
             }
             composable<Route.NotificationOptions> {
