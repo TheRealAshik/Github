@@ -34,6 +34,7 @@ fun ProfileScreen(
     viewModel: ProfileViewModel,
     onBack: () -> Unit,
     onNavigateToRepositories: () -> Unit,
+    onNavigateToStarred: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToOrganizations: () -> Unit
 ) {
@@ -107,6 +108,7 @@ fun ProfileScreen(
                     NavigationListSection(
                         state = state,
                         onNavigateToRepositories = onNavigateToRepositories,
+                        onNavigateToStarred = onNavigateToStarred,
                         onNavigateToOrganizations = onNavigateToOrganizations
                     )
                 }
@@ -352,6 +354,7 @@ private fun PopularReposSection(popularRepos: List<PopularRepo>) {
 private fun NavigationListSection(
     state: ProfileUiState.Success,
     onNavigateToRepositories: () -> Unit,
+    onNavigateToStarred: () -> Unit,
     onNavigateToOrganizations: () -> Unit
 ) {
     Column {
@@ -413,7 +416,7 @@ private fun NavigationListSection(
             },
             label = stringResource(Res.string.nav_starred),
             count = state.starredCount,
-            onClick = { /* TODO */ }
+            onClick = onNavigateToStarred
         )
         NavigationItem(
             icon = {

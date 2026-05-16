@@ -12,6 +12,8 @@ import dev.therealashik.github.profile.ProfileScreen
 import dev.therealashik.github.profile.ProfileViewModel
 import dev.therealashik.github.profile.OrganizationsScreen
 import dev.therealashik.github.profile.OrganizationsViewModel
+import dev.therealashik.github.profile.StarredScreen
+import dev.therealashik.github.profile.StarredViewModel
 import dev.therealashik.github.repository.RepositoryListScreen
 import dev.therealashik.github.repository.RepositoryListViewModel
 import dev.therealashik.github.settings.AddPatScreen
@@ -47,6 +49,7 @@ fun App() {
                     viewModel = ProfileViewModel(),
                     onBack = { navController.popBackStack() },
                     onNavigateToRepositories = { navController.navigate(Route.Repositories) },
+                    onNavigateToStarred = { navController.navigate(Route.Starred) },
                     onNavigateToSettings = { navController.navigate(Route.Settings) },
                     onNavigateToOrganizations = { navController.navigate(Route.Organizations) }
                 )
@@ -54,6 +57,12 @@ fun App() {
             composable<Route.Organizations> {
                 OrganizationsScreen(
                     viewModel = OrganizationsViewModel(),
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable<Route.Starred> {
+                StarredScreen(
+                    viewModel = StarredViewModel(),
                     onBack = { navController.popBackStack() }
                 )
             }
@@ -68,7 +77,12 @@ fun App() {
                     onNavigateBack = { navController.popBackStack() },
                     onNavigateToNotificationOptions = { navController.navigate(Route.NotificationOptions) },
                     onNavigateToCodeOptions = { navController.navigate(Route.CodeOptions) },
-                    onNavigateToAddPat = { navController.navigate(Route.AddPat) }
+                    onNavigateToAddPat = { navController.navigate(Route.AddPat) },
+                    onSignOut = {
+                        navController.navigate(Route.AddPat) {
+                            popUpTo(Route.Settings) { inclusive = true }
+                        }
+                    }
                 )
             }
             composable<Route.NotificationOptions> {

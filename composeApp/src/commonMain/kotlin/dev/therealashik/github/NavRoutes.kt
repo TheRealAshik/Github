@@ -12,4 +12,5 @@ sealed interface Route {
     @Serializable data object CodeOptions : Route
     @Serializable data object AddPat : Route
     @Serializable data object Organizations : Route
+    @Serializable data object Starred : Route
 }
