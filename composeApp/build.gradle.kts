@@ -24,7 +24,7 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
-            isStatic = false
+            isStatic = true
             linkerOpts("-lsqlite3", "-framework", "SwiftUI", "-framework", "UIKit", "-framework", "CoreGraphics", "-framework", "QuartzCore")
         }
     }
