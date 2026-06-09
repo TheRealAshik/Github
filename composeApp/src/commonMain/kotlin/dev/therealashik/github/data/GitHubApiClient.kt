@@ -32,6 +32,13 @@ data class GitHubUserStatus(
     val message: String?
 )
 
+
+@Serializable
+data class GitHubRepoOwner(
+    val login: String,
+    @SerialName("avatar_url") val avatarUrl: String
+)
+
 @Serializable
 data class GitHubRepo(
     val id: Long,
@@ -41,6 +48,7 @@ data class GitHubRepo(
     val private: Boolean = false,
     @SerialName("stargazers_count") val stars: Int = 0,
     val language: String? = null,
+    val owner: GitHubRepoOwner? = null,
     @SerialName("updated_at") val updatedAt: String? = null
 )
 

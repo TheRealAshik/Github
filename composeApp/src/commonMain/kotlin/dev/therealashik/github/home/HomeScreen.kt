@@ -1,4 +1,7 @@
 package dev.therealashik.github.home
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlin.time.*
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +12,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import coil3.compose.AsyncImage
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.outlined.CallSplit
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,14 +59,25 @@ fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}, onNavigateTo
                         Icon(Icons.Outlined.AddCircle, contentDescription = stringResource(Res.string.cd_create))
                     }
                     IconButton(onClick = onNavigateToProfile) {
-                        Icon(
-                            imageVector = Icons.Outlined.Person,
-                            contentDescription = stringResource(Res.string.cd_user_avatar),
-                            modifier = Modifier
-                                .size(Dimens.IconSizeNormal)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                        )
+                        if (state is HomeUiState.Success && state.avatarUrl.isNotEmpty()) {
+                            AsyncImage(
+                                model = state.avatarUrl,
+                                contentDescription = stringResource(Res.string.cd_user_avatar),
+                                modifier = Modifier
+                                    .size(Dimens.IconSizeNormal)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Outlined.Person,
+                                contentDescription = stringResource(Res.string.cd_user_avatar),
+                                modifier = Modifier
+                                    .size(Dimens.IconSizeNormal)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -93,18 +111,36 @@ fun HomeScreenContent(state: HomeUiState, onRetry: () -> Unit = {}, onNavigateTo
             }
             is HomeUiState.Success -> {
                 LazyColumn(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-                    // Repositories
+                    // My Work
                     item { SectionHeader(title = stringResource(Res.string.section_my_work)) }
-                    items(state.repos) { RepoRow(it) }
+                    item {
+                        MyWorkRow(
+                            icon = Icons.Outlined.AccountBox,
+                            title = stringResource(Res.string.my_work_repos),
+                            color = MaterialTheme.colorScheme.surfaceVariant
+                        )
+                    }
+                    item {
+                        MyWorkRow(
+                            icon = Icons.Outlined.Menu,
+                            title = stringResource(Res.string.my_work_orgs),
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    }
                     item { HomeDivider() }
 
-                    // Organizations
-                    item { SectionHeader(title = "Organizations") }
-                    if (state.orgs.isEmpty()) {
-                        item { EmptyHint("No organizations") }
+                    // Favorites
+                    item { SectionHeader(title = stringResource(Res.string.section_favorites)) }
+                    if (state.starred.isEmpty()) {
+                        item { EmptyHint(stringResource(Res.string.no_starred_repos)) }
                     } else {
-                        items(state.orgs) { OrgRow(it) }
+                        items(state.starred.take(5)) { StarredRow(it) }
                     }
+                    item { HomeDivider() }
+
+                    // Shortcuts
+                    item { SectionHeader(title = stringResource(Res.string.section_shortcuts)) }
+                    item { ShortcutsRow() }
                     item { HomeDivider() }
 
                     // Notifications
@@ -139,6 +175,125 @@ private fun SectionHeader(title: String) {
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = stringResource(Res.string.cd_overflow),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun MyWorkRow(icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, color: androidx.compose.ui.graphics.Color) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { }
+            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(Dimens.IconSizeLarge)
+                .background(color, MaterialTheme.shapes.medium),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(Dimens.IconSizeNormal)
+            )
+        }
+        Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+    }
+}
+
+@Composable
+private fun ShortcutsRow() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { }
+            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(Dimens.IconSizeLarge)
+                .background(MaterialTheme.colorScheme.secondary, MaterialTheme.shapes.medium),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Info,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSecondary,
+                modifier = Modifier.size(Dimens.IconSizeNormal)
+            )
+        }
+        Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
+        Column {
+            Text(
+                text = stringResource(Res.string.shortcuts_issues),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = stringResource(Res.string.shortcuts_mentioned),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+}
+
+@Composable
+private fun StarredRow(item: StarredItem) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { }
+            .padding(horizontal = Dimens.SpacingMedium, vertical = Dimens.SpacingSmall),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (item.ownerAvatarUrl.isNotEmpty()) {
+            AsyncImage(
+                model = item.ownerAvatarUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(Dimens.IconSizeAvatar)
+                    .clip(CircleShape)
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(Dimens.IconSizeAvatar)
+                    .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Person,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(Dimens.IconSizeNormal)
+                )
+            }
+        }
+        Spacer(modifier = Modifier.width(Dimens.SpacingMedium))
+        Column {
+            Text(
+                text = item.ownerLogin,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -306,4 +461,57 @@ private fun HomeDivider() {
         thickness = Dimens.BorderWidthThin,
         color = MaterialTheme.colorScheme.outlineVariant
     )
+}
+
+
+
+
+
+
+private fun relativeTime(iso: String): String {
+    return try {
+        // Fallback implementation without kotlinx.datetime since it fails to resolve properly in this environment
+        if (iso.length < 19) return ""
+        val now = io.ktor.util.date.getTimeMillis()
+        // Approximation of ISO parsing using basic math since kotlinx.datetime is not resolving:
+        val year = iso.substring(0, 4).toInt()
+        val month = iso.substring(5, 7).toInt()
+        val day = iso.substring(8, 10).toInt()
+        val hour = iso.substring(11, 13).toInt()
+        val min = iso.substring(14, 16).toInt()
+        val sec = iso.substring(17, 19).toInt()
+
+        val daysInMonth = intArrayOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+        var totalDays = 0L
+        for (y in 1970 until year) {
+            totalDays += if (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0)) 366 else 365
+        }
+        val isLeap = year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+        for (m in 1 until month) {
+            totalDays += daysInMonth[m]
+            if (m == 2 && isLeap) totalDays++
+        }
+        totalDays += (day - 1)
+
+        val totalSeconds = (totalDays * 24L * 60L * 60L) + (hour * 60L * 60L) + (min * 60L) + sec
+        val millis = totalSeconds * 1000L
+
+        val diff = now - millis
+        if (diff < 0) return "just now"
+
+        val diffSeconds = diff / 1000
+        val diffMinutes = diffSeconds / 60
+        val diffHours = diffMinutes / 60
+        val diffDays = diffHours / 24
+
+        when {
+            diffSeconds < 60 -> "${diffSeconds}s"
+            diffMinutes < 60 -> "${diffMinutes}m"
+            diffHours < 24 -> "${diffHours}h"
+            diffDays < 7 -> "${diffDays}d"
+            else -> "${diffDays / 7}w"
+        }
+    } catch (e: Exception) {
+        ""
+    }
 }
