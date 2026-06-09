@@ -266,7 +266,7 @@
     <string name="add_pat_title">Add Account</string>
     <string name="add_pat_description">Enter a GitHub Personal Access Token (PAT) with the required scopes to authenticate.</string>
     <string name="add_pat_label">Personal Access Token</string>
-    <string name="add_pat_placeholder">ghp_xxxxxxxxxxxxxxxxxxxx</string>
+    <string name="add_pat_placeholder">REDACTED_PLACEHOLDER</string>
     <string name="add_pat_save">Save Token</string>
 
     <!-- Code Preview Placeholder Strings -->
