@@ -24,7 +24,8 @@ kotlin {
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
-            isStatic = false
+            freeCompilerArgs += listOf("-linker-option", "-framework", "-linker-option", "SwiftUI", "-linker-option", "-framework", "-linker-option", "UIKit", "-linker-option", "-framework", "-linker-option", "CoreGraphics", "-linker-option", "-framework", "-linker-option", "QuartzCore")
+            isStatic = true
         }
     }
     
